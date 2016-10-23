@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Make a 'meta hook' that runs after a rebase
+case "$1" in
+  rebase) exec .git/hooks/post-merge ;;
+esac

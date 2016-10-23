@@ -1,0 +1,28 @@
+#/usr/bin/env bash
+# MIT © Sindre Sorhus - sindresorhus.com
+# modified for Monkii by Lindsay Gaines
+
+changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)"
+
+check_run() {
+  echo "$changed_files" | grep -E --quiet "$1" && eval "$2"
+}
+
+# `npm install` and `npm prune` if the `package.json` file gets changed
+# to update all the nodejs ( grunt ) dependencies deleting the unused packages (not listed into the  `package.json` file)
+check_run package.json "npm install && npm prune"
+
+# `composer install` if the `composer.json` file gets changed
+# to update all the php dependencies
+check_run composer "vagrant ssh -- -t 'cd /vagrant && composer install'"
+
+# for the sass files we need a bit more
+# check whether there is a gulpfile in the root of the project
+if [ -n $(find . -maxdepth 1 -iname "gulpfile.js") ]
+    then
+    # try to compile just using grunt sass
+    check_run ".scss|.sass|.js" "gulp"
+fi
+
+# just run artisan migrate for the fuck of it
+vagrant ssh -- -t 'cd /vagrant/www && php artisan migrate && php artisan migrate_season 2017'
