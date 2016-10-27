@@ -21,49 +21,49 @@ export DEBIAN_FRONTEND=noninteractive
 
 # Don't update more than one per day
 if [ -f /var/log/vagrant_provision_last_update_time.log ]; then
-	LAST_UPDATED=`cat /var/log/vagrant_provision_last_update_time.log`
-	DAY_AGO=`date +%s --date='-1 day'`
+    LAST_UPDATED=`cat /var/log/vagrant_provision_last_update_time.log`
+    DAY_AGO=`date +%s --date='-1 day'`
 else
-	LAST_UPDATED=""
+    LAST_UPDATED=""
 fi
 
 if [ -z "$LAST_UPDATED" ] || [ "$LAST_UPDATED" -lt "$DAY_AGO" ]; then
 
-	# Install packages
-	cl "Install / update packages"
+    # Install packages
+    cl "Install / update packages"
 
-	log "updating packages"
-	apt-get purge -q -f -y --force-yes \
-	    -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' \
-	    php5 php5-cli php5-common php5-dev php-pear \
-	    php5-gd php5-json php5-mysql php5-readline php5-xdebug \
-	    libapache2-mod-php5
+    log "updating packages"
+    apt-get purge -q -f -y --force-yes \
+        -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' \
+        php5 php5-cli php5-common php5-dev php-pear \
+        php5-gd php5-json php5-mysql php5-readline php5-xdebug \
+        libapache2-mod-php5
 
     add-apt-repository ppa:ondrej/php
     apt-get update
 
-	apt-get install -q -f -y --force-yes \
-	  -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' \
-	  build-essential git language-pack-en-base unzip \
-	  apache2 \
-	  php7.0 php7.0-dev php7.0-mcrypt php7.0-curl php7.0-xdebug php7.0-mbstring php7.0-dom \
-	  libapache2-mod-php7.0 \
-	  postgresql postgresql-contrib php7.0-pgsql \
-#	  mysql-server-5.5 php7.0-mysql \
-	  imagemagick php7.0-imagick \
-	  memcached php7.0-memcached \
-	  postfix mailutils
-#	  libsqlite3-dev ruby1.9.1-dev
+    apt-get install -q -f -y --force-yes \
+      -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' \
+      build-essential git language-pack-en-base unzip \
+      apache2 \
+      php7.0 php7.0-dev php7.0-mcrypt php7.0-curl php7.0-xdebug php7.0-mbstring php7.0-dom \
+      libapache2-mod-php7.0 \
+      postgresql postgresql-contrib php7.0-pgsql \
+#      mysql-server-5.5 php7.0-mysql \
+      imagemagick php7.0-imagick \
+      memcached php7.0-memcached \
+      postfix mailutils
+#      libsqlite3-dev ruby1.9.1-dev
 
-	apt-get -y remove puppet chef chef-zero puppet-common
+    apt-get -y remove puppet chef chef-zero puppet-common
     apt-get autoremove
 
-	# Make log file to save last updated time
-	date +%s > /var/log/vagrant_provision_last_update_time.log
+    # Make log file to save last updated time
+    date +%s > /var/log/vagrant_provision_last_update_time.log
 
 else
-	log "skipping updating packages"
-	cl "Updates last ran less than a day ago so skipping"
+    log "skipping updating packages"
+    cl "Updates last ran less than a day ago so skipping"
 fi
 
 # Set timezone
@@ -99,9 +99,9 @@ chmod 644 /var/log/apache2/access.log /var/log/apache2/error.log
 
 # Configure postfix
 if [ -f /etc/postfix/main.cf ]; then
-	log "configure postfix"
-	sed -i '/relayhost =/c relayhost = devrelay.in.monkii.com' /etc/postfix/main.cf
-	service postfix restart
+    log "configure postfix"
+    sed -i '/relayhost =/c relayhost = devrelay.in.monkii.com' /etc/postfix/main.cf
+    service postfix restart
 fi
 
 # Configure PHP
@@ -119,39 +119,38 @@ service apache2 restart
 
 # Link repository webroot to server webroot
 if [ ! -h "/var/www/$HOST_NAME" ] || [ ! -d "/var/www/$HOST_NAME" ]; then
-	log "create symlink to webroot"
+    log "create symlink to webroot"
     ln -fs "$WEBROOT" "/var/www/$HOST_NAME"
 fi
 
 
 # Make sure symlinks to import and export database scripts exist
 if [ ! -h "/usr/local/bin/load-db" ]; then
-	log "create symlink for load-db script"
-  ln -s /vagrant/setup/scripts/load-db.sh /usr/local/bin/load-db
+    log "create symlink for load-db script"
+    ln -s /vagrant/setup/scripts/load-db.sh /usr/local/bin/load-db
 fi
 if [ ! -h "/usr/local/bin/save-db" ]; then
-	log "create symlink for save-db script"
-  ln -s /vagrant/setup/scripts/save-db.sh /usr/local/bin/save-db
+    log "create symlink for save-db script"
+    ln -s /vagrant/setup/scripts/save-db.sh /usr/local/bin/save-db
 fi
 
 
 # Setup database
 NEW_DB=false
 for DB in ""$DATABASES; do
-  if ! mysql -e "use $DB" >/dev/null 2>&1; then
-    NEW_DB=true
     cl "Setting up database..."
     cl "Database name: $DB"
     cl "Database username: $DB_USER"
-    log "setting up database. Name: ""$DB"", User: ""$DB_USER"", Host: $DB_HOST"
 
-    mysql << EOF
-    DROP DATABASE IF EXISTS test;
-    CREATE DATABASE $DB CHARACTER SET utf8 COLLATE utf8_general_ci;
-    GRANT ALL ON $DB.* TO '$DB_USER'@'$DB_HOST' identified by '$DB_PASS';
-    FLUSH PRIVILEGES;
+    log "setting up database. Name: ""$DB"", User: ""$DB_USER"", Host: $DB_HOST"
+    sudo -u postgres createdb $DB
+
+    DB_EXISTS=$?
+
+    sudo -u postgres psql -s $DB << EOF
+  CREATE USER $DB_USER PASSWORD '$DB_PASS';
+  GRANT ALL PRIVILEGES ON DATABASE $DB TO $DB_USER;
 EOF
-  fi
 done
 
 
@@ -166,10 +165,10 @@ php -r "unlink('composer-setup.php');"
 
 # CMS specific provisioning
 for filename in /vagrant/setup/bootstrap.*.sh; do
-	if [ "$filename" == "/vagrant/setup/bootstrap.""$CMS_SPECIFIC_BOOTSTRAP"".sh" ]; then
-		cl "Running provisioning script for bootstrap.""$CMS_SPECIFIC_BOOTSTRAP"".sh" -l
-		. $filename
-	fi
+    if [ "$filename" == "/vagrant/setup/bootstrap.""$CMS_SPECIFIC_BOOTSTRAP"".sh" ]; then
+        cl "Running provisioning script for bootstrap.""$CMS_SPECIFIC_BOOTSTRAP"".sh" -l
+        . $filename
+    fi
 done
 
 
@@ -178,13 +177,17 @@ done
 
 # Now we've got access to the bubbles mount if we just created a new DB then
 # check if there is a dump to import
-if [ "$NEW_DB" = true ] ; then
+if [ $DB_EXISTS -eq 0 ] ; then
   cl "Loading database data from shared folders"
   su - vagrant -c "load-db -y"
 fi
 
 # Make sure composer vendors are installed
 su - vagrant -c "cd $WEBROOT && cp .env.example .env && composer install"
+
+if ! grep 'APP_KEY=\(.\+\)' "$WEBROOT/.env"; then
+    su - vagrant -c "cd $WEBROOT && php artisan key:generate"
+fi
 
 # Re-enable xdebug
 # Leaving this disabled as we aren't likely to make extensive use of xdebug on cli tasks ~lg@monkii.com
