@@ -5,10 +5,6 @@
 
 @section('content')
 
-
-    <div>
-        @each('partials.item', $items, 'item')
-    </div>
+    <img src="{{ $item->details['url'] }}">
 
 @endsection
-

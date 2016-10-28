@@ -53,6 +53,9 @@
                             <li><a href="{{ url('/login') }}">Login</a></li>
                             <li><a href="{{ url('/register') }}">Register</a></li>
                         @else
+                            <li class="">
+                                {{ link_to_route('item.create', $title = 'Create', $parameters = [], $attributes = ['class' => 'btn']) }}
+                            </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                     {{ Auth::user()->name }} <span class="caret"></span>
@@ -78,7 +81,11 @@
             </div>
         </nav>
 
-        @yield('content')
+        <div id="main">
+            <div class="container">
+                @yield('content')
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->

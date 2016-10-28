@@ -1,5 +1,7 @@
 /node_modules
 /public/storage
+*.css.map
+*.js.map
 /storage/*.key
 /vendor
 /.idea
