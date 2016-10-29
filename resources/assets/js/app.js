@@ -24,7 +24,7 @@ const app = new Vue({
 
         // Non-vue code here
         var $items = $('.item'),
-            $activeItem = $('.item.item--active');
+            $activeItem = $('.item.item__active');
 
         // Nothing to do
         if ($items.length == 0) {
@@ -33,10 +33,21 @@ const app = new Vue({
 
         // If none is marked active, start with the first
         if ($activeItem.length == 0) {
-            $activeItem = $('.item:first').addClass('item--active')
+            $activeItem = $('.item:first').addClass('item__active')
         }
-
-
+        cycleActiveItem();
     });
 })(jQuery);
 
+function cycleActiveItem() {
+    var $activeItem = $('.item.item__active');
+    $activeItem.removeClass('item__active');
+    if ($activeItem.next().length > 0) {
+        console.log($activeItem.next());
+        $activeItem.next().addClass('item__active');
+    } else {
+        $activeItem.prevAll().last().addClass('item__active');
+    }
+
+    setTimeout(cycleActiveItem, 5000);
+}

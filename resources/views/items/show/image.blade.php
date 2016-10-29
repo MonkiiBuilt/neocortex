@@ -1,2 +1,4 @@
 
-<img src="{{ $item->details['url'] }}">
+<div class="item-image" style="background-image: url({{ $item->details['url'] }})">
+
+</div>
