@@ -18,3 +18,25 @@ Vue.component('example', require('./components/Example.vue'));
 const app = new Vue({
     el: '#app'
 });
+
+(function($) {
+    $(function() {
+
+        // Non-vue code here
+        var $items = $('.item'),
+            $activeItem = $('.item.item--active');
+
+        // Nothing to do
+        if ($items.length == 0) {
+            return;
+        }
+
+        // If none is marked active, start with the first
+        if ($activeItem.length == 0) {
+            $activeItem = $('.item:first').addClass('item--active')
+        }
+
+
+    });
+})(jQuery);
+

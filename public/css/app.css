@@ -5766,8 +5766,48 @@ button.close {
   .hidden-print {
     display: none !important; } }
 
+body {
+  background: #000; }
+
 .wrapper {
   width: 980px;
   margin: 0 auto; }
+
+.navbar {
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
+  -webkit-transition: 200ms ease-in-out;
+  transition: 200ms ease-in-out; }
+  body:hover .navbar {
+    -webkit-transform: translateY(0);
+    transform: translateY(0); }
+
+.item {
+  -webkit-transform: translateX(-100%);
+  transform: translateX(-100%); }
+  .item img {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    overflow: auto; }
+
+.item--full {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  overflow: auto;
+  background: #000; }
+
+.item--active {
+  -webkit-transform: translateX(0);
+  transform: translateX(0); }
 
 /*# sourceMappingURL=app.css.map */

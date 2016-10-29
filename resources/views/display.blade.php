@@ -5,9 +5,8 @@
 
 @section('content')
 
-
-    <div>
-        @each('partials.item', $items, 'item')
+    <div id="item-display">
+        @include('items.full')
     </div>
 
 @endsection

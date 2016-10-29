@@ -1,0 +1,11 @@
+
+.navbar {
+  transform: translateY(-100%);
+
+  transition: 200ms ease-in-out;
+
+  body:hover & {
+    transform: translateY(0);
+  }
+}
+
