@@ -13,6 +13,14 @@
 
 Route::get('/', 'HomeController@index')->name('home');
 
+// Routes for user registration, login, logout, and password reset
 Auth::routes();
 
+// Resource routes (index, create, store, etc) for items
 Route::resource('item', 'ItemController');
+
+// JSON API routes
+Route::group(['prefix' => 'api/v1', 'namespace' => 'Api'], function() {
+    Route::resource('item', 'ItemApiController');
+    Route::resource('user', 'UserApiController');
+});

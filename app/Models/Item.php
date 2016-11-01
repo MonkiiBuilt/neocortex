@@ -23,6 +23,8 @@ class Item extends Model
         'details' => 'array',
     ];
 
+
+
     /**
      * Get the user that owns the item.
      */
