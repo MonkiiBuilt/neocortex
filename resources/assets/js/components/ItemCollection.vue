@@ -4,7 +4,8 @@
             v-for="(item, index) in items"
             :item="item"
             :index="index"
-            :active="activeItem == index">
+            :active="index == activeItem"
+            :next="next">
         </item>
     </div>
 </template>
@@ -26,23 +27,18 @@
         methods: {
             fetchItems() {
                 console.log('fetching items');
-                this.$http.get('/api/v1/item').then((response) =>
+                this.$http.get('item').then((response) =>
                 {
                     this.$set(this, 'items', response.data.data);
-                    window.setTimeout(this.advanceActiveItem, 10000);
                 }, (response) => {
                     console.log('error fetching items');
                 });
             },
 
-            advanceActiveItem() {
+            // Used by child Items to trigger an advance to the next Item
+            next() {
                 this.activeItem = (this.items.length - 1 == this.activeItem) ? 0 : this.activeItem + 1;
-                window.setTimeout(this.advanceActiveItem, 10000);
             }
         },
-
-        http: {
-            root: 'item',
-        }
     }
 </script>

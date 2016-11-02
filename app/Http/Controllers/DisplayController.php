@@ -21,8 +21,6 @@ class DisplayController extends Controller
      */
     public function index()
     {
-        $items = [];
-
-        return view('display', ['items' => $items]);
+        return view('display');
     }
 }

@@ -6,7 +6,7 @@
 @section('content')
 
     <div id="item-display">
-        @include('items.full')
+
     </div>
 
 @endsection
