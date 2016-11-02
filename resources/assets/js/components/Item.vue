@@ -8,10 +8,6 @@
 
 <script>
     export default {
-        data() {
-            return {};
-        },
-
         props: [
             'item',
             'index',
@@ -27,10 +23,5 @@
                 return '';
             },
         },
-
-
-        http: {
-            root: 'item',
-        }
     }
 </script>
