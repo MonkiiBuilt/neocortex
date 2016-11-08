@@ -207,6 +207,9 @@ a2dissite 000-default
 log "restart apache"
 service apache2 restart
 
+cd /vagrant/vendor/nilportugues/laravel5-json-api
+patch -p1 < ../../../patches/vendor/nilportugues/laravel5-json-api/108.patch
+
 # Say how long the script took to execute (with the seconds in bold yellow)
 END_SECONDS="$(date +%s)"
 TIME_ELAPSED=`expr $END_SECONDS - $START_SECONDS`
