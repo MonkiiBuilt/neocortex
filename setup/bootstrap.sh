@@ -211,6 +211,10 @@ composer install
 cd /vagrant/vendor/nilportugues/laravel5-json-api
 patch -p1 < ../../../patches/vendor/nilportugues/laravel5-json-api/108.patch
 
+cd /vagrant
+# Prepare configure file.
+cp .env.example .env
+
 # Install migration.
 php artisan migrate
 
