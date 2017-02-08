@@ -15,8 +15,8 @@ log "start of bootstrap"
 export DEBIAN_FRONTEND=noninteractive
 
 # Set MySQL root password
-#debconf-set-selections <<< "mysql-server-5.5 mysql-server/root_password password $DB_ROOT_PASS"
-#debconf-set-selections <<< "mysql-server-5.5 mysql-server/root_password_again password $DB_ROOT_PASS"
+debconf-set-selections <<< "mysql-server-5.5 mysql-server/root_password password $DB_ROOT_PASS"
+debconf-set-selections <<< "mysql-server-5.5 mysql-server/root_password_again password $DB_ROOT_PASS"
 
 
 # Don't update more than one per day
@@ -34,9 +34,10 @@ if [ -z "$LAST_UPDATED" ] || [ "$LAST_UPDATED" -lt "$DAY_AGO" ]; then
 
     log "updating packages"
 
+    add-apt-repository ppa:ondrej/php
     apt-get update
 
-    apt-get install -q -f -y --allow \
+    apt-get install -q -f -y \
       -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' \
       build-essential git language-pack-en-base unzip \
       apache2 \
@@ -45,8 +46,8 @@ if [ -z "$LAST_UPDATED" ] || [ "$LAST_UPDATED" -lt "$DAY_AGO" ]; then
       libapache2-mod-php7.0 \
       postgresql postgresql-contrib php7.0-pgsql \
       mysql-server-5.7 php7.0-mysql php-mysql \
-      imagemagick php7.0-imagick \
-      memcached php7.0-memcached \
+      imagemagick php-imagick \
+      memcached php-memcached \
       postfix mailutils
 #      libsqlite3-dev ruby1.9.1-dev
 
@@ -133,19 +134,18 @@ fi
 # Setup database
 NEW_DB=false
 for DB in ""$DATABASES; do
-    cl "Setting up database..."
-    cl "Database name: $DB"
-    cl "Database username: $DB_USER"
+    if ! mysql -u root -p${DB_ROOT_PASS} -e "use ${DB}" >/dev/null 2>&1; then
 
-    log "setting up database. Name: ""$DB"", User: ""$DB_USER"", Host: $DB_HOST"
-    sudo -u postgres createdb $DB
+      cl "setting up database. Name: ""$DB"", User: ""$DB_USER"", Host: $DB_HOST"
 
-    DB_EXISTS=$?
-
-    sudo -u postgres psql -s $DB << EOF
-  CREATE USER $DB_USER PASSWORD '$DB_PASS';
-  GRANT ALL PRIVILEGES ON DATABASE $DB TO $DB_USER;
+      cat | mysql -u root -ppassword << EOF
+      DROP DATABASE IF EXISTS test;
+      CREATE DATABASE ${DB};
+      GRANT ALL ON ${DB}.* TO '${DB_USER}'@'${DB_HOST}' identified by '${DB_PASS}';
+      FLUSH PRIVILEGES;
 EOF
+
+    fi
 done
 
 
@@ -172,10 +172,10 @@ done
 
 # Now we've got access to the bubbles mount if we just created a new DB then
 # check if there is a dump to import
-if [ $DB_EXISTS -eq 0 ] ; then
-  cl "Loading database data from shared folders"
-  su - $USERNAME -c "load-db -y"
-fi
+#if [ $DB_EXISTS -eq 0 ] ; then
+#  cl "Loading database data from shared folders"
+#  su - $USERNAME -c "load-db -y"
+#fi
 
 # Make sure composer vendors are installed
 su - vagrant -c "cd $WEBROOT && cp .env.example .env && composer install"
@@ -212,8 +212,11 @@ cd /vagrant/vendor/nilportugues/laravel5-json-api
 patch -p1 < ../../../patches/vendor/nilportugues/laravel5-json-api/108.patch
 
 cd /vagrant
+
 # Prepare configure file.
-cp .env.example .env
+if [ ! -f .env ]; then
+  cp .env.example .env
+fi
 
 # Install migration.
 php artisan migrate

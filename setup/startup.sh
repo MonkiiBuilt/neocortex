@@ -4,7 +4,7 @@
 . "/vagrant/setup/variables.sh"
 
 # Set up mount on Bubbles
-/vagrant/setup/project-data.sh
+#/vagrant/setup/project-data.sh
 
 # Create symlinks to git hooks
 /vagrant/setup/scripts/symlink-git-hooks.sh

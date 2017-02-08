@@ -2,7 +2,7 @@
 
 PROJECT_NAME="neocortex"
 PROJECT_HUMAN_NAME="neocortex"
-HOST_NAME="in.monkii.com"
+HOST_NAME="neocortex.in.monkii.com"
 IP="192.168.56.101"
 FRAMEWORK="laravel"
 CMS_SPECIFIC_BOOTSTRAP="laravel"
