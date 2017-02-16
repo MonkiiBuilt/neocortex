@@ -1,25 +1,15 @@
 <template>
-    <div class="item item__full"
-         :class="{ item__active: active }">
-         <component
-            :is="item.component"
-            :details="item.attributes.details"
-            :next="next">
-         </component>
+    <div class="item-image"
+         :style="{ backgroundImage: 'url(' + imageUrl + ')' }">
     </div>
 </template>
 
 <script>
     export default {
         props: {
-            item: {
+            details: {
                 type: Object,
                 required: true
-            },
-            index: Number,
-            active: {
-                  type: Boolean,
-                  default: false
             },
             // This can be used by an item to trigger a transition to the
             // next Item in the ItemCollection
@@ -27,6 +17,15 @@
                 type: Function,
                 required: true
             }
+        },
+
+        computed: {
+            imageUrl() {
+                if (this.details) {
+                    return this.details.url;
+                }
+                return '';
+            },
         },
 
         mounted() {

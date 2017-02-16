@@ -30,6 +30,11 @@
                 this.$http.get('item').then((response) =>
                 {
                     this.$set(this, 'items', response.data.data);
+
+                    this.items.map(function (e) {
+                        e.component = 'item-' + e.attributes.type;
+                    });
+
                 }, (response) => {
                     console.log('error fetching items');
                 });

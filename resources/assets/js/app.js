@@ -15,8 +15,10 @@ require('./bootstrap');
 
 Vue.http.options.root = 'api';
 
-Vue.component('item', require('./components/Item.vue'));
 Vue.component('item-collection', require('./components/ItemCollection.vue'));
+Vue.component('item', require('./components/Item.vue'));
+Vue.component('item-image', require('./components/Items/Image.vue'));
+Vue.component('item-video', require('./components/Items/Video.vue'));
 
 if (window.location.pathname == '/') {
     const app = new Vue({

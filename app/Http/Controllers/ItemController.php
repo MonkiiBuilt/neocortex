@@ -156,6 +156,7 @@ class ItemController extends Controller
 
             case 'giphy.com':
             case 'imgur.com':
+            case 'i.imgur.com':
                 return 'image';
         }
     }
@@ -164,7 +165,11 @@ class ItemController extends Controller
         if (preg_match('/^.*\.(jpg|jpeg|png|gif)$/i', $path)) {
             return "image";
         }
+        if (preg_match('/^.*\.(mp4|gifv)$/i', $path)) {
+            return "video";
+        }
     }
 
     // http://www.gifbin.com/bin/102013/1383326970_dog_in_space.gif
+    // http://i.imgur.com/59D3ja0.gifv
 }

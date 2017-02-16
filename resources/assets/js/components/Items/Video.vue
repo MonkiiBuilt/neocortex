@@ -1,25 +1,18 @@
 <template>
-    <div class="item item__full"
-         :class="{ item__active: active }">
-         <component
-            :is="item.component"
-            :details="item.attributes.details"
-            :next="next">
-         </component>
+    <div class="item-video">
+        <video autoplay loop>
+            <source :src="webmUrl" type="video/webm">
+            <source :src="mp4Url" type="video/mp4">
+        </video>
     </div>
 </template>
 
 <script>
     export default {
         props: {
-            item: {
+            details: {
                 type: Object,
                 required: true
-            },
-            index: Number,
-            active: {
-                  type: Boolean,
-                  default: false
             },
             // This can be used by an item to trigger a transition to the
             // next Item in the ItemCollection
@@ -27,6 +20,21 @@
                 type: Function,
                 required: true
             }
+        },
+
+        computed: {
+            webmUrl() {
+                if (this.details) {
+                    return this.details.url.replace('gifv','webm');
+                }
+                return '';
+            },
+            mp4Url() {
+                if (this.details) {
+                    return this.details.url.replace('gifv','mp4');
+                }
+                return '';
+            },
         },
 
         mounted() {
