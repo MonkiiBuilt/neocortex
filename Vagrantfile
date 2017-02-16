@@ -4,8 +4,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |node_config|
 
   node_config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
-  node_config.vm.box = "ubuntu/xenial64"
-  node_config.vm.box_url = "http://my.monkii.com.au/vagrant/boxes/ubuntu-xenial64-monkii-vagrant.box"
+  node_config.vm.box = "boxcutter/ubuntu1604"
+#  node_config.vm.box_url = "http://my.monkii.com.au/vagrant/boxes/ubuntu-xenial64-monkii-vagrant.box"
 
   node_config.vm.provision :shell, path: "setup/bootstrap.sh"
   node_config.vm.provision :shell, path: "setup/startup.sh", run: "always"
