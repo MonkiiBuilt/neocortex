@@ -42,7 +42,7 @@
 
             // Used by child Items to trigger an advance to the next Item
             next() {
-                this.activeItem = (this.items.length - 1 == this.activeItem) ? 0 : this.activeItem + 1;
+                this.activeItem = ((this.items.length - 1) == this.activeItem) ? 0 : (this.activeItem + 1);
             }
         },
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Libs\YouTube;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -53,6 +54,10 @@ class ItemController extends Controller
 
         list($type, $details) = $this->parseItemUrl($url);
 
+        if (empty($type) || empty($details)) {
+            //
+        }
+
         $item = new Item([
             'user_id' => $user->id,
             'type' => $type,
@@ -75,11 +80,11 @@ class ItemController extends Controller
     public function show($id)
     {
         $item = Item::findOrFail($id);
-\Log::debug($item);
 
         if (View::exists("items.show.{$item->type}")) {
             return view("items.show.{$item->type}", ['item' => $item]);
         }
+
         return view('errors.503');
     }
 
@@ -124,19 +129,22 @@ class ItemController extends Controller
     private function parseItemUrl($url) {
         // Parse the URL into components
         $url_domain = parse_url($url, PHP_URL_HOST);
-        $url_path = parse_url($url, PHP_URL_PATH);
+        $url_path   = parse_url($url, PHP_URL_PATH);
 
         $type = $this->getItemTypeFromDomain($url_domain);
 
         if (!$type) {
             $type = $this->getItemTypeFromPath($url_path);
-        } else {
-            $type = "url";
         }
 
-        $data = [
-            'url' => $url
-        ];
+        if ($type == "youtube") {
+            $data = YouTube::getDataFromUrl($url);
+        }
+        else {
+            $data = [
+                'url' => $url
+            ];
+        }
 
         // Return a tuple with type and details specific to that type
         return [
@@ -151,20 +159,26 @@ class ItemController extends Controller
      */
     private function getItemTypeFromDomain($domain) {
         switch ($domain) {
-            case 'youtube.com':
+            case 'www.youtube.com':
                 return 'youtube';
+
+            case 'vimeo.com':
+                return 'vimeo';
 
             case 'giphy.com':
             case 'imgur.com':
             case 'i.imgur.com':
                 return 'image';
         }
+
+        return null;
     }
 
     private function getItemTypeFromPath($path) {
         if (preg_match('/^.*\.(jpg|jpeg|png|gif)$/i', $path)) {
             return "image";
         }
+
         if (preg_match('/^.*\.(mp4|gifv)$/i', $path)) {
             return "video";
         }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use Barryvdh\Debugbar\Facade as Debugbar;
 
-
 class HomeController extends Controller
 {
     /**

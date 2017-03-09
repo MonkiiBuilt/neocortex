@@ -19,6 +19,7 @@ Vue.component('item-collection', require('./components/ItemCollection.vue'));
 Vue.component('item', require('./components/Item.vue'));
 Vue.component('item-image', require('./components/Items/Image.vue'));
 Vue.component('item-video', require('./components/Items/Video.vue'));
+Vue.component('item-youtube', require('./components/Items/YouTube.vue'));
 
 if (window.location.pathname == '/') {
     const app = new Vue({
@@ -31,11 +32,11 @@ if (window.location.pathname == '/') {
 
         template: '<div id="main"><item-collection></item-collection></div>',
 
-
         ready () {
         },
 
         methods: {
         }
     });
+
 }

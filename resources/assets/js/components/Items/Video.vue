@@ -27,12 +27,14 @@
                 if (this.details) {
                     return this.details.url.replace('gifv','webm');
                 }
+
                 return '';
             },
             mp4Url() {
                 if (this.details) {
                     return this.details.url.replace('gifv','mp4');
                 }
+
                 return '';
             },
         },
@@ -53,5 +55,5 @@
                 }
             }
         }
-}
+    }
 </script>

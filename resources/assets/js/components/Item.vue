@@ -4,6 +4,8 @@
          <component
             :is="item.component"
             :details="item.attributes.details"
+            :index="index"
+            :active="active"
             :next="next">
          </component>
     </div>
@@ -26,23 +28,6 @@
             next: {
                 type: Function,
                 required: true
-            }
-        },
-
-        mounted() {
-            this.waitForNext();
-        },
-
-        updated() {
-            this.waitForNext();
-        },
-
-        methods: {
-            waitForNext() {
-                // For a basic image, cycle after 10 seconds
-                if (this.active) {
-                    window.setTimeout(this.next, 10000)
-                }
             }
         }
 }

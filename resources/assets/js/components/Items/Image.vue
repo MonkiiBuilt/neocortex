@@ -1,6 +1,7 @@
 <template>
     <div class="item-image"
-         :style="{ backgroundImage: 'url(' + imageUrl + ')' }">
+        :class="{ component__active: active }"
+        :style="{ backgroundImage: 'url(' + imageUrl + ')' }">
     </div>
 </template>
 
@@ -10,6 +11,11 @@
             details: {
                 type: Object,
                 required: true
+            },
+            index: Number,
+            active: {
+                  type: Boolean,
+                  default: false
             },
             // This can be used by an item to trigger a transition to the
             // next Item in the ItemCollection
@@ -24,6 +30,7 @@
                 if (this.details) {
                     return this.details.url;
                 }
+
                 return '';
             },
         },
@@ -40,9 +47,9 @@
             waitForNext() {
                 // For a basic image, cycle after 10 seconds
                 if (this.active) {
-                    window.setTimeout(this.next, 10000)
+                    window.setTimeout(this.next, 4000)
                 }
             }
         }
-}
+    }
 </script>
