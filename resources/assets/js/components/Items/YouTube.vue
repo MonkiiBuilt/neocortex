@@ -55,7 +55,7 @@
 
         methods: {
             waitForNext() {
-                // For youtube embed, cycle after video duration
+                // For youtube embed, cycle after video duration (+5 seconds)
                 if (this.active) {
                     if (this.details) {
                         var src = $("#vid-"+this.index).attr("data-src");

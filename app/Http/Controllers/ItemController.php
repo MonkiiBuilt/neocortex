@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Libs\YouTube;
-use Illuminate\Http\Request;
+use App\Http\Requests\CreateFormRequest;
 use Illuminate\Support\Facades\View;
 
 use App\Http\Requests;
@@ -47,7 +47,7 @@ class ItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateFormRequest $request)
     {
         $url = $request->input('url');
         $user = auth()->user();
@@ -55,7 +55,7 @@ class ItemController extends Controller
         list($type, $details) = $this->parseItemUrl($url);
 
         if (empty($type) || empty($details)) {
-            //
+            return redirect()->route('item.create')->withInput()->withErrors(['url' => CreateFormRequest::$messages['url.invalid']]);
         }
 
         $item = new Item([
@@ -106,7 +106,7 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CreateFormRequest $request, $id)
     {
         //
     }
