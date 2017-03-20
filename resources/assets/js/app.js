@@ -20,6 +20,7 @@ Vue.component('item', require('./components/Item.vue'));
 Vue.component('item-image', require('./components/Items/Image.vue'));
 Vue.component('item-video', require('./components/Items/Video.vue'));
 Vue.component('item-youtube', require('./components/Items/YouTube.vue'));
+Vue.component('item-vimeo', require('./components/Items/Vimeo.vue'));
 
 if (window.location.pathname == '/') {
     const app = new Vue({

@@ -22,6 +22,12 @@
             active: {
                   type: Boolean,
                   default: false
+            },
+            // This can be used by an item to trigger a transition to the
+            // next Item in the ItemCollection
+            next: {
+                type: Function,
+                required: true
             }
         }
 }

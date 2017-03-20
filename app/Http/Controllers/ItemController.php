@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Libs\Vimeo;
 use App\Libs\YouTube;
 use App\Http\Requests\CreateFormRequest;
 use Illuminate\Support\Facades\View;
@@ -140,6 +141,9 @@ class ItemController extends Controller
         if ($type == "youtube") {
             $data = YouTube::getDataFromUrl($url);
         }
+        else if ($type == "vimeo") {
+            $data = Vimeo::getDataFromUrl($url);
+        }
         else {
             $data = [
                 'url' => $url
@@ -159,6 +163,7 @@ class ItemController extends Controller
      */
     private function getItemTypeFromDomain($domain) {
         switch ($domain) {
+            case 'youtube.com':
             case 'www.youtube.com':
                 return 'youtube';
 

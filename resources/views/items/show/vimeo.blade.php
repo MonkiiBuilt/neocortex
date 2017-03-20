@@ -9,7 +9,7 @@
         <div class="items">
             <div class="item item__full item__active">
                 <div class="item-iframe">
-                    <iframe src="https://www.youtube.com/embed/{{ $item->details['vid_id'] }}?rel=0&hd=1&autoplay=1" frameborder="0"></iframe>
+                    <iframe src="https://player.vimeo.com/video/{{ $item->details['vid_id'] }}?autoplay=1&badge=0" width="640" height="360" frameborder="0"></iframe>
                 </div>
             </div>
         </div>
