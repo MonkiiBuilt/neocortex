@@ -1,3 +1,7 @@
 * text=auto
+
 *.css linguist-vendored
 *.scss linguist-vendored
+
+# Ensure that bash files are always checked out with unix line-endings
+*.sh text eol=lf
