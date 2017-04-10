@@ -44,7 +44,6 @@ if [ -z "$LAST_UPDATED" ] || [ "$LAST_UPDATED" -lt "$DAY_AGO" ]; then
       php7.0 php7.0-mcrypt php7.0-curl php-xdebug php7.0-mbstring php7.0-xml \
       php7.0-zip \
       libapache2-mod-php7.0 \
-      postgresql postgresql-contrib php7.0-pgsql \
       mysql-server-5.7 php7.0-mysql php-mysql \
       imagemagick php-imagick \
       memcached php-memcached \
@@ -93,13 +92,6 @@ EOF
 sed -i 's/create 640 root adm/create 644 root adm/' /etc/logrotate.d/apache2
 chmod 644 /var/log/apache2/access.log /var/log/apache2/error.log
 
-# Configure postfix
-if [ -f /etc/postfix/main.cf ]; then
-    log "configure postfix"
-    sed -i '/relayhost =/c relayhost = devrelay.in.monkii.com' /etc/postfix/main.cf
-    service postfix restart
-fi
-
 # Configure PHP
 log "configure php"
 php-setting-update display_errors 'On'
@@ -108,7 +100,7 @@ php-setting-update html_errors 'On'
 php-setting-update xdebug.max_nesting_level '256'
 
 # Make apache2 log folder readable by vagrant
-sudo adduser $USERNAME admin
+sudo adduser "$USERNAME" admin
 chmod g+wx /var/log/apache2
 
 service apache2 restart
@@ -166,24 +158,6 @@ for filename in /vagrant/setup/bootstrap.*.sh; do
     fi
 done
 
-
-# Set up mount on Bubbles
-#/vagrant/setup/project-data.sh
-
-# Now we've got access to the bubbles mount if we just created a new DB then
-# check if there is a dump to import
-#if [ $DB_EXISTS -eq 0 ] ; then
-#  cl "Loading database data from shared folders"
-#  su - $USERNAME -c "load-db -y"
-#fi
-
-# Make sure composer vendors are installed
-su - vagrant -c "cd $WEBROOT && cp .env.example .env && composer install"
-
-if ! grep 'APP_KEY=\(.\+\)' "$WEBROOT/.env"; then
-    su - vagrant -c "cd $WEBROOT && php artisan key:generate"
-fi
-
 # Re-enable xdebug
 # Leaving this disabled as we aren't likely to make extensive use of xdebug on cli tasks ~lg@monkii.com
 #cd /etc/php5/cli/conf.d/ && ln -s ../../mods-available/xdebug.ini 20-xdebug.ini
@@ -203,23 +177,19 @@ a2dissite 000-default
 log "restart apache"
 service apache2 restart
 
-# Use composer to install laravel
-cd /vagrant
-composer install
-
 # Apply patch to make it work with Laravel 5.3
 cd /vagrant/vendor/nilportugues/laravel5-json-api
 patch -p1 < ../../../patches/vendor/nilportugues/laravel5-json-api/108.patch
 
-cd /vagrant
+# Make sure composer vendors are installed
+su - vagrant -c "cd $WEBROOT && cp .env.example .env && composer install"
 
-# Prepare configure file.
-if [ ! -f .env ]; then
-  cp .env.example .env
+if ! grep 'APP_KEY=\(.\+\)' "$WEBROOT/.env"; then
+    su - vagrant -c "cd $WEBROOT && php artisan key:generate"
 fi
 
-# Install migration.
-php artisan migrate
+# Run db migrations
+su - vagrant -c "cd $WEBROOT && php artisan migrate"
 
 # Say how long the script took to execute (with the seconds in bold yellow)
 END_SECONDS="$(date +%s)"
@@ -231,8 +201,7 @@ BOLD=$(tput bold)
 NORMAL=$(tput sgr0)
 cl "Provisioning complete in $YELLOW$BOLD$FORMATTED_TIME$NORMAL $BLUE\n"
 
-cl 'Add the following line to yours hosts file:\n'
-cl "$IP $HOST_NAME"
+cl 'Access the test environment via http://localhost:9999'
 cl ""
 
 log "bootstrap finished"
