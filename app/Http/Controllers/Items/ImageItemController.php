@@ -11,9 +11,9 @@ use App\Http\Controllers\Controller;
  * Class BaseItemController
  * @package App\Http\Controllers\Items
  */
-class ItemTypeController extends Controller
+class ImageItemTypeController extends Controller
 {
-    protected $type = 'item';
+    protected $type = 'image';
 
     /**
      * Given a URL, provide a weighted value indicating whether the URL is
@@ -25,10 +25,11 @@ class ItemTypeController extends Controller
      * and pass it to the matchHeaders method.
      *
      * @param $url
-     * @return int The 'weight' of a possible match, with 0 meaning "no match".
+     * @return integer The 'weight' of a possible match, with 0 meaning "no match".
      */
     public static function matchURL($url) {
-        return 0;
+        $extensionMatch = preg_match('/\.(gif|jpg|png)/', $url);
+        return $extensionMatch;
     }
 
 
@@ -37,7 +38,7 @@ class ItemTypeController extends Controller
      * type matching can be performed on HTTP headers, for example mime type.
      *
      * @param $response
-     * @return int The 'weight' of a possible match, with 0 meaning "no match".
+     * @return integer The 'weight' of a possible match, with 0 meaning "no match".
      */
     public static function matchHeaders($response) {
         return 0;
