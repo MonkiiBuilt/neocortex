@@ -178,7 +178,7 @@ log "restart apache"
 service apache2 restart
 
 # Add vendor/bin to path for ease of running phpunit
-echo 'PATH="/vagrant/vendor/bin:$PATH"' >> "/home/$USERNAME/profile"
+echo 'PATH="/vagrant/vendor/bin:$PATH"' >> "/home/$USERNAME/.profile"
 
 # Apply patch to make it work with Laravel 5.3
 cd /vagrant/vendor/nilportugues/laravel5-json-api
