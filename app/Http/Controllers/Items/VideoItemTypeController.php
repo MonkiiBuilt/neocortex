@@ -11,9 +11,9 @@ use App\Http\Controllers\Controller;
  * Class BaseItemController
  * @package App\Http\Controllers\Items
  */
-class BaseItemTypeController extends Controller
+class VideoItemTypeController extends BaseItemTypeController
 {
-    protected static $type = 'item';
+    protected static $type = 'video';
 
     /**
      * Given a URL, provide a weighted value indicating whether the URL is
@@ -25,10 +25,11 @@ class BaseItemTypeController extends Controller
      * and pass it to the matchHeaders method.
      *
      * @param $url
-     * @return int The 'weight' of a possible match, with 0 meaning "no match".
+     * @return integer The 'weight' of a possible match, with 0 meaning "no match".
      */
     public static function matchURL($url) {
-        return 0;
+        $extensionMatch = preg_match('/\.(mp4|gifv|webm)/', $url);
+        return $extensionMatch;
     }
 
 
@@ -37,7 +38,7 @@ class BaseItemTypeController extends Controller
      * type matching can be performed on HTTP headers, for example mime type.
      *
      * @param $response
-     * @return int The 'weight' of a possible match, with 0 meaning "no match".
+     * @return integer The 'weight' of a possible match, with 0 meaning "no match".
      */
     public static function matchHeaders($response) {
         return 0;
@@ -45,21 +46,14 @@ class BaseItemTypeController extends Controller
 
 
     /**
-     * Add or change properties within item->details before it's saved to the
-     * database.
+     * Save an item to the database
      *
      * @return \Illuminate\Http\Response
      */
     public function store(Item $item)
     {
-        // Manipulate item->details before it is saved in the database
+        // Manipulate the item before it is saved in the database
     }
 
 
-    /**
-     * @return string The item type referenced by the class being matched.
-     */
-    public static function getType() {
-        return static::$type;
-    }
 }

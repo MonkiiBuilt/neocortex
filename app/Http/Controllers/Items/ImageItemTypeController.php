@@ -11,9 +11,9 @@ use App\Http\Controllers\Controller;
  * Class BaseItemController
  * @package App\Http\Controllers\Items
  */
-class ImageItemTypeController extends Controller
+class ImageItemTypeController extends BaseItemTypeController
 {
-    protected $type = 'image';
+    protected static $type = 'image';
 
     /**
      * Given a URL, provide a weighted value indicating whether the URL is
