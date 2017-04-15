@@ -12,7 +12,10 @@ class ItemTypeServiceProvider extends ServiceProvider
 {
     // Keep a reference to all available ItemTypeControllers in case an item
     // needs to be classified
-    protected static $itemTypeControllers = [];
+    protected static $itemTypeControllers = [
+        ImageItemTypeController::class,
+        VideoItemTypeController::class,
+    ];
 
 
     /**
@@ -22,15 +25,7 @@ class ItemTypeServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Add any new ItemTypeControllers here
-        $itemTypes = [
-            ImageItemTypeController::class,
-            VideoItemTypeController::class,
-        ];
-
-        foreach ($itemTypes as $controllerClass) {
-            ItemTypeServiceProvider::registerItemType($controllerClass);
-        }
+        //
     }
 
     /**
@@ -41,13 +36,6 @@ class ItemTypeServiceProvider extends ServiceProvider
     public function register()
     {
         //
-    }
-
-    /**
-     * @param $itemTypeController class
-     */
-    public static function registerItemType($itemTypeController) {
-        self::$itemTypeControllers[] = $itemTypeController;
     }
 
 
