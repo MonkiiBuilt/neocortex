@@ -56,17 +56,12 @@
         methods: {
             waitForNext() {
                 // For vimeo embed, cycle after video duration (+5 seconds)
-                if (this.active) {
-                    if (this.details) {
-                        var src = $("#vid-"+this.index).attr("data-src");
-                        $("#vid-"+this.index).attr("src", src);
+                if (this.active && this.details) {
+                    var src = $("#vid-"+this.index).attr("data-src");
+                    $("#vid-"+this.index).attr("src", src);
 
-                        // Extra time for loading process
-                        window.setTimeout(this.unload, this.details.duration + 5000);
-                    }
-                    else {
-                        window.setTimeout(this.next, 1000);
-                    }
+                    // Extra time for loading process
+                    window.setTimeout(this.unload, this.details.duration + 5000);
                 }
             },
             unload() {

@@ -7758,4 +7758,40 @@ body:hover .navbar {
   height: 100%;
 }
 
+.queue .queue-item {
+  display: -webkit-box;
+  display: flex;
+}
+
+.queue .queue-item .queue-check {
+  width: 10%;
+}
+
+.queue .queue-item .queue-content {
+  width: 70%;
+}
+
+.queue .queue-item .queue-duration {
+  width: 20%;
+  text-align: center;
+}
+
+.queue .queue-item .queue-duration input[type="number"] {
+  display: block;
+  margin: 0 auto;
+  width: 10rem;
+  max-width: 100%;
+}
+
+.queue .item-image {
+  width: 100%;
+  padding-bottom: 56.25%;
+  background-color: black;
+}
+
+.queue__pagination {
+  width: 100%;
+  text-align: center;
+}
+
 /*# sourceMappingURL=app.css.map */

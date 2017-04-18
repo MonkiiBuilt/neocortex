@@ -18,3 +18,6 @@ Auth::routes();
 
 // Resource routes (index, create, store, etc) for items
 Route::resource('item', 'ItemController');
+
+// Queue
+Route::get('/queue', ['uses' => 'QueueController@index', 'as' => 'queue']);

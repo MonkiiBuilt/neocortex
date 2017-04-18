@@ -27,7 +27,7 @@
         methods: {
             fetchItems() {
                 console.log('fetching items');
-                this.$http.get('item').then((response) =>
+                this.$http.get('item?sort=-id').then((response) =>
                 {
                     this.$set(this, 'items', response.data.data);
 

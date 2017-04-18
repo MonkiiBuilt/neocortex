@@ -35,7 +35,7 @@ class ItemController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Support\Facades\View
      */
     public function create()
     {
@@ -76,13 +76,13 @@ class ItemController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Support\Facades\View
      */
     public function show($id)
     {
         $item = Item::findOrFail($id);
 
-        if (View::exists("items.show.{$item->type}")) {
+        if ($item && View::exists("items.show.{$item->type}")) {
             return view("items.show.{$item->type}", ['item' => $item]);
         }
 
