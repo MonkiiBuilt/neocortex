@@ -17,7 +17,7 @@ SITE_LOCALE="au"
 ADMIN_EMAIL="developers@monkii.com"
 ADMIN_USERNAME="admin"
 ADMIN_PASS="password"
-USERNAME="ubuntu"
+USERNAME="vagrant"
 
 # new 'sites' variable for Drupal installs - space-separated sites, default value "default"
 # for other frameworks, this will be an empty string - need to iterate over ""$SITES in scripts to ensure it's run once

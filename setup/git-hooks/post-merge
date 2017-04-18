@@ -25,4 +25,4 @@ if [ -n $(find . -maxdepth 1 -iname "gulpfile.js") ]
 fi
 
 # just run artisan migrate for the fuck of it
-vagrant ssh -- -t 'cd /vagrant/www && php artisan migrate && php artisan migrate_season 2017'
+vagrant ssh -- -t 'cd /vagrant/www && php artisan migrate'

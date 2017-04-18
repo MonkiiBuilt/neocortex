@@ -16,17 +16,17 @@ class Item extends Model
      */
     protected $table = 'items';
 
+    // Minimum needed to save an item: owner, what type of item, and serialised details
     protected $fillable = [
         'user_id',
         'type',
         'details'
     ];
 
+    // When the item is loaded, make sure details are unserialised
     protected $casts = [
         'details' => 'array',
     ];
-
-
 
     /**
      * Get the user that owns the item.
