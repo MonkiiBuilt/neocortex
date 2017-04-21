@@ -37,10 +37,10 @@ class VideoItemTypeController extends BaseItemTypeController
      * If no URL match is found, a HEAD request will be made to the URL so that
      * type matching can be performed on HTTP headers, for example mime type.
      *
-     * @param $response
+     * @param $headers
      * @return integer The 'weight' of a possible match, with 0 meaning "no match".
      */
-    public static function matchHeaders($response) {
+    public static function matchHeaders($headers) {
         return 0;
     }
 
