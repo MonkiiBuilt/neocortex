@@ -2,12 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-//use Illuminate\Http\Request;
-//use Illuminate\Support\Facades\View;
-
-
 use App\Models\User;
-use NilPortugues\Laravel5\JsonApi\Controller\JsonApiController;
 
 class UserApiController extends JsonApiController
 {

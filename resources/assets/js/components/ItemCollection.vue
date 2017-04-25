@@ -32,7 +32,7 @@
                     this.$set(this, 'items', response.data.data);
 
                     this.items.map(function (e) {
-                        e.component = 'item-' + e.attributes.type;
+                        e.component = 'item-' + e.attributes.item_type;
                     });
 
                 }, (response) => {

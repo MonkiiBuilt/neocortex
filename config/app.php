@@ -168,7 +168,6 @@ return [
          */
         Barryvdh\Debugbar\ServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
-        NilPortugues\Laravel5\JsonApi\Laravel5JsonApiServiceProvider::class,
 
         /*
          * Application Service Providers...
