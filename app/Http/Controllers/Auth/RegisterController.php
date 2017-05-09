@@ -47,11 +47,24 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        // Validation rules for the user register form
+        $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
-        ]);
+        ];
+        $messages = [];
+
+        // Custom validation and message if email domain restriction in place
+        $userRestrictionDomain = config('auth.restrictions.maildomain', false);
+        if ($userRestrictionDomain) {
+            // This is a bit unnecessary because maildomain is configured to
+            // use the same config setting by default but YOLO ~lg
+            $rules['email'] .= "|maildomain:$userRestrictionDomain";
+            $messages['email.maildomain'] = "Please use an email @$userRestrictionDomain";
+        }
+
+        return Validator::make($data, $rules, $messages);
     }
 
     /**

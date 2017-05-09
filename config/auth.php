@@ -99,4 +99,17 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | User restrictions
+    |--------------------------------------------------------------------------
+    |
+    | You may specify restrictions on who can register for an account.
+    |
+    */
+
+    'restrictions' => [
+        'maildomain' => env('USER_RESTRICTION_DOMAIN', false),
+    ],
+
 ];
