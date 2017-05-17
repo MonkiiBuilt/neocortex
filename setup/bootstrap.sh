@@ -180,7 +180,9 @@ service apache2 restart
 echo 'PATH="/vagrant/vendor/bin:$PATH"' >> "/home/$USERNAME/.profile"
 
 # Make sure composer vendors are installed
-su - vagrant -c "cd $WEBROOT && cp .env.example .env && composer install"
+if [ ! -h "$WEBROOT/.env" ]; then
+    su - vagrant -c "cd $WEBROOT && cp .env.example .env && composer install"
+fi
 
 if ! grep 'APP_KEY=\(.\+\)' "$WEBROOT/.env"; then
     su - vagrant -c "cd $WEBROOT && php artisan key:generate"
