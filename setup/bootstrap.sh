@@ -90,7 +90,7 @@ EOF
 
 # Log files should be accessible by all
 sed -i 's/create 640 root adm/create 644 root adm/' /etc/logrotate.d/apache2
-chmod 644 /var/log/apache2/access.log /var/log/apache2/error.log
+chmod g+rwx /var/log/apache2
 
 # Configure PHP
 log "configure php"
@@ -101,7 +101,6 @@ php-setting-update xdebug.max_nesting_level '256'
 
 # Make apache2 log folder readable by vagrant
 sudo adduser "$USERNAME" admin
-chmod g+wx /var/log/apache2
 
 service apache2 restart
 
@@ -179,10 +178,6 @@ service apache2 restart
 
 # Add vendor/bin to path for ease of running phpunit
 echo 'PATH="/vagrant/vendor/bin:$PATH"' >> "/home/$USERNAME/.profile"
-
-# Apply patch to make it work with Laravel 5.3
-cd /vagrant/vendor/nilportugues/laravel5-json-api
-patch -p1 < ../../../patches/vendor/nilportugues/laravel5-json-api/108.patch
 
 # Make sure composer vendors are installed
 su - vagrant -c "cd $WEBROOT && cp .env.example .env && composer install"
