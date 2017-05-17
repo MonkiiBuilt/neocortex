@@ -66,7 +66,8 @@ class ItemController extends Controller
         ]);
 
         if ($item->save()) {
-            return redirect()->route('item.show', ['item' => $item]);
+//            return redirect()->route('item.show', ['item' => $item]);
+            return redirect()->route('home');
         }
 
         return redirect('item.create')->with('errors', 'Could not parse URL');
