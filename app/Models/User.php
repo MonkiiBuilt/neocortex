@@ -26,4 +26,13 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+
+    /**
+     * Get the item's queue entry if it has one.
+     */
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
 }
