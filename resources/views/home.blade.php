@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Neocortex')
+@section('title', config('app.name', 'Neocortex'))
 
 @section('content')
 <div class="container">
