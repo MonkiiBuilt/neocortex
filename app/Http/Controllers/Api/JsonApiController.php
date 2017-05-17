@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Api\QueueSchema;
 use App\Models\Item;
+use App\Models\Queue;
 use App\Models\User;
 use App\Models\Api\ItemSchema;
 use App\Models\Api\UserSchema;
@@ -17,6 +19,7 @@ class JsonApiController extends Controller
 {
     protected $modelSchemaMappings = [
         Item::class => ItemSchema::class,
+        Queue::class => QueueSchema::class,
         User::class => UserSchema::class,
     ];
 

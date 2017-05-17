@@ -3,7 +3,7 @@
          :class="{ item__active: active }">
          <component
             :is="item.component"
-            :details="item.attributes.details"
+            :details="item.details"
             :index="index"
             :active="active"
             :next="next">

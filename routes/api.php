@@ -20,3 +20,4 @@ Route::get('/user', function (Request $request) {
 
 
 Route::resource('item', 'Api\ItemApiController');
+Route::resource('queue', 'Api\QueueApiController');

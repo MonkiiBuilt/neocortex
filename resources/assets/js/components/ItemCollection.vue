@@ -27,12 +27,19 @@
         methods: {
             fetchItems() {
                 console.log('fetching items');
-                this.$http.get('item?sort=-id').then((response) =>
+                this.$http.get('queue').then((response) =>
                 {
-                    this.$set(this, 'items', response.data.data);
+                    // API now delivers "queue" items
+                    // We extract all the "item" objects
+                    var items = [];
+                    for (var queueEntry in response.data.data) {
+                        items.push(response.data.data[queueEntry].attributes.item)
+                    }
+                    this.$set(this, 'items', items);
 
+                    // Map each item type to a Vue component
                     this.items.map(function (e) {
-                        e.component = 'item-' + e.attributes.item_type;
+                        e.component = 'item-' + e.type;
                     });
 
                 }, (response) => {
