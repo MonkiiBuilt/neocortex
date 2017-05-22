@@ -5,7 +5,8 @@
             :item="item"
             :index="index"
             :active="index == activeItem"
-            :next="next">
+            :next="next"
+            :key="item.id">
         </item>
     </div>
 </template>
@@ -20,27 +21,63 @@
         },
 
         mounted() {
-            console.log('Component ready.')
+            console.log('ItemCollection mounted')
             this.fetchItems();
         },
 
         methods: {
             fetchItems() {
-                console.log('fetching items');
+                console.log('ItemCollection fetching items');
                 this.$http.get('queue').then((response) =>
                 {
-                    // API now delivers "queue" items
+                    console.log(this.items);
+                    // API delivers "queue" items
                     // We extract all the "item" objects
-                    var items = [];
-                    for (var queueEntry in response.data.data) {
-                        items.push(response.data.data[queueEntry].attributes.item)
-                    }
-                    this.$set(this, 'items', items);
+                    for (let fetchedEntry in response.data.data) {
+                        let fetchedItem = response.data.data[fetchedEntry].attributes.item;
+console.log(fetchedItem);
+                        // Mark each Item as "seen" because it was seen in the
+                        // API response. Afterwards we will remove all Items
+                        // that were not "seen" as we know they've been removed
+                        fetchedItem.seen = true;
 
-                    // Map each item type to a Vue component
-                    this.items.map(function (e) {
-                        e.component = 'item-' + e.type;
+                        // Check if the fetched item is already in the active
+                        // display queue
+                        let itemFound = false;
+                        for (let queueEntry in this.items) {
+                            let queueItem = this.items[queueEntry];
+                            if (queueItem.id === fetchedItem.id) {
+                                queueItem.seen = true;
+                                itemFound = true;
+                                break;
+                            }
+                        }
+
+                        // If the item was found in the current list, no need
+                        // to add it
+                        if (itemFound) {
+                            console.log("Item " + fetchedItem.id + " found");
+                            continue;
+                        }
+
+                        // Add the item fetched from the server to the display
+                        // queue
+                        this.items.push(fetchedItem);
+                    }
+
+                    // Examine each item in the queue, removing items that were
+                    // not seen in the last update from the server, and reset
+                    // seen flag and component while we're iterating through
+                    let j = 0, squeezing = false;
+                    this.items.forEach((item, index) => {
+                        if (item.seen) {
+                            if (squeezing) this.items[j] = item;
+                            j++;
+                        } else squeezing = true;
+                        item.component = 'item-' + item.type;
+                        delete(item.seen);
                     });
+                    this.items.length = j;
 
                 }, (response) => {
                     console.log('error fetching items');
@@ -49,7 +86,18 @@
 
             // Used by child Items to trigger an advance to the next Item
             next() {
-                this.activeItem = ((this.items.length - 1) == this.activeItem) ? 0 : (this.activeItem + 1);
+                let nextActiveItem = ((this.items.length - 1) === this.activeItem) ? 0 : (this.activeItem + 1);
+
+                // Periodically refresh the queue from the server
+                if (this.activeItem === 0) {
+                    // Only attempt to fetch when we go back to the start, as
+                    // item indexes may change
+                    this.fetchItems();
+                }
+
+                // Only update this.activeItem once sync is complete or the
+                // current activeItem could be removed
+                this.activeItem = nextActiveItem;
             }
         },
     }
