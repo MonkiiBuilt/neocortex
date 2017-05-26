@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Items;
+namespace App\Models\Items;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Models\Item;
 
-/** ItemTypeController is used to identify and manipulate a specific type of
- * item.
- *
- * Class BaseItemController
- * @package App\Http\Controllers\Items
- */
-class ImageItemTypeController extends BaseItemTypeController
+class Image extends Item
 {
-    protected static $type = 'image';
+    /**
+     * The value of the item.type field which indicates this item class.
+     *
+     * @var string
+     */
+    protected static $singleTableType = 'image';
+
 
     /**
      * Given a URL, provide a weighted value indicating whether the URL is
@@ -27,7 +26,7 @@ class ImageItemTypeController extends BaseItemTypeController
      * @param $url
      * @return integer The 'weight' of a possible match, with 0 meaning "no match".
      */
-    public static function matchURL($url) {
+    public static function matchByURL($url) {
         $extensionMatch = preg_match('/\.(gif|jpg|png)/', $url);
         return $extensionMatch;
     }
@@ -40,20 +39,8 @@ class ImageItemTypeController extends BaseItemTypeController
      * @param $headers
      * @return integer The 'weight' of a possible match, with 0 meaning "no match".
      */
-    public static function matchHeaders($headers) {
+    public static function matchByHeaders($headers) {
         return 0;
     }
-
-
-    /**
-     * Save an item to the database
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Item $item)
-    {
-        // Manipulate the item before it is saved in the database
-    }
-
 
 }

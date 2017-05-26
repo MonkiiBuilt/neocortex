@@ -15,7 +15,7 @@ class ItemTypeCheckTest extends TestCase
     {
         $testUrls = [
             // No known match
-            'http://example.com/a.html' => '',
+            'http://example.com/a.html' => null,
 
             // Images
             'http://example.com/a.png' => 'image',
@@ -38,9 +38,8 @@ class ItemTypeCheckTest extends TestCase
 
             // Use the ItemTypeServiceProvider to determine which type of item
             // this is
-            $itemCheckType = \App\Providers\ItemTypeServiceProvider::identifyItemType($item);
-            $this->assertTrue($itemCheckType === $correctType,
-                "URL $url identified as $itemCheckType => should have been $correctType");
+            $this->assertTrue($item->type === $correctType,
+                "URL $url identified as {$item->type} => should have been $correctType");
         }
     }
 }
