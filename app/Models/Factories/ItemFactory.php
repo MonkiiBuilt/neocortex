@@ -1,89 +1,37 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Factories;
 
-use App\Events\ItemCreated;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Nanigans\SingleTableInheritance\SingleTableInheritanceTrait;
+use App\Models\Item;
 
-class Item extends Model
+class ItemFactory
 {
-    use SoftDeletes;
-    use SingleTableInheritanceTrait;
-
     /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'items';
-
-    /**
-     * The column where item type is stored, used to infer single table
-     * inheritance subclasses.
-     *
-     * @var string
-     */
-    protected static $singleTableTypeField = 'type';
-
-    /**
-     * Enumeration of all Item subtype classes.
-     *
-     * @var array
-     */
-    protected static $singleTableSubclasses = [
-        Items\Image::class,
-        Items\Video::class,
-    ];
-
-    // Minimum needed to save an item: owner, what type of item, and serialised details
-    protected $fillable = [
-        'user_id',
-        'type',
-        'details'
-    ];
-
-    // When the item is loaded, make sure details are unserialised
-    protected $casts = [
-        'details' => 'array',
-    ];
-
-    protected $events = [
-        'created' => ItemCreated::class,
-    ];
-
-    /**
-     * Get the user that owns the item.
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-
-    /**
-     * Get the item's queue entry if it has one.
-     */
-    public function queueEntry()
-    {
-        return $this->hasOne(Queue::class);
-    }
-
-
-    public static function getTypeField() {
-        return static::$singleTableTypeField;
-    }
-
-    /**
-     * Check if the fill attributes include the type field.
-     *
+     * Create a new Item
      * @param array $attributes
-     * @return bool
+     * @return mixed
      */
-    public static function getTypeFrom(array $attributes) {
-        $typeField = static::$singleTableTypeField;
-        return (!empty($attributes[$typeField]) ? $attributes[$typeField] : null);
+    public static function create(array $attributes) {
+
+        // If the provided attributes don't include a type, try to determine
+        // the item type based on what's provided
+        if (!Item::getTypeFrom($attributes)) {
+            $type = Item::identifyItemType($attributes);
+            // Set the correct type field based on the type that was found
+            $attributes[Item::getTypeField()] = $type;
+        }
+
+        $itemTypeMap = Item::getSingleTableTypeMap();
+
+        // Find a class that matches the type attribute
+        foreach ($itemTypeMap as $typeValue => $typeClass) {
+            // If a match is found, return an instance of the matching class
+            if ($typeValue == $attributes[Item::getTypeField()]) {
+                return new $typeClass($attributes);
+            }
+        }
+
+        throw Exception;
     }
 
 

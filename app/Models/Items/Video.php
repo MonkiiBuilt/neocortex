@@ -28,7 +28,28 @@ class Video extends Item
      */
     public static function matchByURL($url) {
         $extensionMatch = preg_match('/\.(mp4|gifv|webm)/', $url);
-        return $extensionMatch;
+        if ($extensionMatch) {
+            return $extensionMatch;
+        }
+
+//        // If no matching file extension, look for other indicators
+//        $url_domain = parse_url($url, PHP_URL_HOST);
+//        $imageHostingDomains = array(
+//            'giphy.com',
+//            'imgur.com',
+//            'i.imgur.com',
+//            'gfycat.com',
+//        );
+//        if (in_array($url_domain, $imageHostingDomains)) {
+//            return 10;
+//        }
+
+/*
+        $data = YouTube::getDataFromUrl($url);
+        $data = Vimeo::getDataFromUrl($url);
+ */
+        // No match, this doesn't appear to be a video
+        return 0;
     }
 
 

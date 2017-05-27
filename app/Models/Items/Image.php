@@ -13,7 +13,6 @@ class Image extends Item
      */
     protected static $singleTableType = 'image';
 
-
     /**
      * Given a URL, provide a weighted value indicating whether the URL is
      * likely to served by this Item type.
@@ -27,8 +26,12 @@ class Image extends Item
      * @return integer The 'weight' of a possible match, with 0 meaning "no match".
      */
     public static function matchByURL($url) {
-        $extensionMatch = preg_match('/\.(gif|jpg|png)/', $url);
-        return $extensionMatch;
+        // Try to match based on file extension
+        $extensionMatch = preg_match('/\.(gif|jpg|jpeg|png)/', $url);
+        if ($extensionMatch) {
+            return $extensionMatch;
+        }
+        return 0;
     }
 
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Libs\Vimeo;
 use App\Libs\YouTube;
 use App\Http\Requests\CreateFormRequest;
+use App\Models\Factories\ItemFactory;
+use App\Models\Items\Image;
 use Illuminate\Support\Facades\View;
 
 use App\Http\Requests;
@@ -53,20 +55,23 @@ class ItemController extends Controller
         $url = $request->input('url');
         $user = auth()->user();
 
-        list($type, $details) = $this->parseItemUrl($url);
-
-        if (empty($type) || empty($details)) {
-            return redirect()->route('item.create')->withInput()->withErrors(['url' => CreateFormRequest::$messages['url.invalid']]);
-        }
-
-        $item = new Item([
+        // Attempt to create a new item from the provided URL
+        $item = ItemFactory::create([
             'user_id' => $user->id,
-            'type' => $type,
-            'details' => $details,
+            'details'=>['url' => $url]
         ]);
 
+        // If a valid item type couldn't be found, don't save to the db
+        if (empty($item->type)) {
+            return redirect()
+                ->route('item.create')
+                ->withInput()
+                ->withErrors(['url' => CreateFormRequest::$messages['url.invalid']]);
+        }
+
+        // If everything looks fine, redirect to home where the item should
+        // have been added to the queue
         if ($item->save()) {
-//            return redirect()->route('item.show', ['item' => $item]);
             return redirect()->route('home');
         }
 
@@ -124,72 +129,4 @@ class ItemController extends Controller
         //
     }
 
-    /**
-     * @param $url
-     * @return array
-     */
-    private function parseItemUrl($url) {
-        // Parse the URL into components
-        $url_domain = parse_url($url, PHP_URL_HOST);
-        $url_path   = parse_url($url, PHP_URL_PATH);
-
-        $type = $this->getItemTypeFromDomain($url_domain);
-
-        if (!$type) {
-            $type = $this->getItemTypeFromPath($url_path);
-        }
-
-        if ($type == "youtube") {
-            $data = YouTube::getDataFromUrl($url);
-        }
-        else if ($type == "vimeo") {
-            $data = Vimeo::getDataFromUrl($url);
-        }
-        else {
-            $data = [
-                'url' => $url
-            ];
-        }
-
-        // Return a tuple with type and details specific to that type
-        return [
-            $type,
-            $data
-        ];
-    }
-
-    /**
-     * @param $domain
-     * @return string
-     */
-    private function getItemTypeFromDomain($domain) {
-        switch ($domain) {
-            case 'youtube.com':
-            case 'www.youtube.com':
-                return 'youtube';
-
-            case 'vimeo.com':
-                return 'vimeo';
-
-            case 'giphy.com':
-            case 'imgur.com':
-            case 'i.imgur.com':
-                return 'image';
-        }
-
-        return null;
-    }
-
-    private function getItemTypeFromPath($path) {
-        if (preg_match('/^.*\.(jpg|jpeg|png|gif)$/i', $path)) {
-            return "image";
-        }
-
-        if (preg_match('/^.*\.(mp4|gifv)$/i', $path)) {
-            return "video";
-        }
-    }
-
-    // http://www.gifbin.com/bin/102013/1383326970_dog_in_space.gif
-    // http://i.imgur.com/59D3ja0.gifv
 }
