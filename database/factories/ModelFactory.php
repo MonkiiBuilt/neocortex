@@ -12,7 +12,7 @@
 */
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(App\User::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     static $password;
 
     return [
@@ -20,5 +20,23 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
+    ];
+});
+
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\Items\Image::class, function (Faker\Generator $faker) {
+    return [
+        'details' => [
+            'url' => 'http://example.com/'. str_random(10) .'.png',
+        ],
+    ];
+});
+
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\Items\Video::class, function (Faker\Generator $faker) {
+    return [
+        'details' => [
+            'url' => 'http://example.com/'. str_random(10) .'.mp4',
+        ],
     ];
 });

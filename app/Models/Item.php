@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Events\ItemCreated;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Nanigans\SingleTableInheritance\SingleTableInheritanceTrait;
@@ -11,6 +12,8 @@ class Item extends Model
 {
     use SoftDeletes;
     use SingleTableInheritanceTrait;
+
+    const ITEM_ACTIVE_MINUTES = 2;
 
     /**
      * The table associated with the model.
@@ -226,4 +229,19 @@ class Item extends Model
         return $headers;
     }
 
+    /**
+     * Returns true if an Item should be retired from the queue.
+     *
+     * @param Queue $queueEntry The Queue model for the current display of the
+     * Item.
+     * @return bool
+     */
+    public function shouldRetire(Queue $queueEntry) {
+        // Was the queue entry created
+        if ($queueEntry->created_at->lte(Carbon::now()->subMinutes(self::ITEM_ACTIVE_MINUTES))) {
+            \Debugbar::debug("Item {$this->id} past active lifetime");
+            return true;
+        }
+        return false;
+    }
 }

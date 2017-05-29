@@ -3,6 +3,7 @@
 namespace App\Models\Factories;
 
 use App\Models\Item;
+use App\Exceptions\UnknownItemTypeException;
 
 class ItemFactory
 {
@@ -31,7 +32,7 @@ class ItemFactory
             }
         }
 
-        throw Exception;
+        throw new UnknownItemTypeException();
     }
 
 

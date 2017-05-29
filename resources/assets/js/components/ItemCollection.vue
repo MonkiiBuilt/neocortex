@@ -87,7 +87,7 @@ console.log(fetchedItem);
             // Used by child Items to trigger an advance to the next Item
             next() {
                 let nextActiveItem = ((this.items.length - 1) === this.activeItem) ? 0 : (this.activeItem + 1);
-
+console.log('nextActiveItem',nextActiveItem);
                 // Periodically refresh the queue from the server
                 if (this.activeItem === 0) {
                     // Only attempt to fetch when we go back to the start, as
@@ -97,7 +97,14 @@ console.log(fetchedItem);
 
                 // Only update this.activeItem once sync is complete or the
                 // current activeItem could be removed
-                this.activeItem = nextActiveItem;
+                if (this.activeItem !== nextActiveItem) {
+                    this.activeItem = nextActiveItem;
+                } else {
+                    this.activeItem = -1;
+                    this.$nextTick(function() {
+                        this.activeItem = 0;
+                    });
+                }
             }
         },
     }

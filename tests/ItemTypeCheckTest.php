@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Models\Factories\ItemFactory;
 
 class ItemTypeCheckTest extends TestCase
 {
@@ -34,7 +32,14 @@ class ItemTypeCheckTest extends TestCase
 
         foreach ($testUrls as $url => $correctType) {
             // Mock an item based on the URL
-            $item = new \App\Models\Item(['details'=>['url' => $url]]);
+            $item = null;
+            try {
+                $item = ItemFactory::create(['details'=>['url' => $url]]);
+            } catch (\App\Exceptions\UnknownItemTypeException $e) {
+                $this->assertNull($correctType,
+                    "URL $url was unidentified, should have been $correctType");
+                continue;
+            }
 
             // Use the ItemTypeServiceProvider to determine which type of item
             // this is
