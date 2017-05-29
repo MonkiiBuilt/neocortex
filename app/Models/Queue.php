@@ -81,17 +81,26 @@ class Queue extends Model
             });
     }
 
+    /**
+     * Return a "faked" item with a pre-set image for when the queue is empty.
+     * @return static
+     */
     public static function fallbackQueueItem() {
+        // Manually set the type as the STI lib won't catch this when it isnt
+        // going in the db
         $fallbackItem = new Image([
             'type' => 'image',
             'details' => ['url' => 'http://www.gifbin.com/bin/102013/1383326970_dog_in_space.gif'],
         ]);
         $fallbackItem->id = -1; // No item should have this id
+
+        // Fake a queue item and attack the image
         $fallbackQueue = new static([
             'status' => 'active',
             'views' => 0,
         ]);
         $fallbackQueue->item = $fallbackItem;
+
         return $fallbackQueue;
     }
 }
