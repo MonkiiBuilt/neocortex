@@ -13,7 +13,7 @@ class Item extends Model
     use SoftDeletes;
     use SingleTableInheritanceTrait;
 
-    const ITEM_ACTIVE_MINUTES = 2;
+    const ITEM_ACTIVE_MINUTES = 60;
 
     /**
      * The table associated with the model.
