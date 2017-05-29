@@ -10,7 +10,6 @@ class Queue extends Model
 {
     const STATUS_ACTIVE = 'active';
     const STATUS_RETIRED = 'retired';
-    const STATUS_SEEN = 'seen';
     const STATUS_PERMANENT = 'permanent';
 
     /**

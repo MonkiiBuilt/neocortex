@@ -19,7 +19,6 @@ class CreateQueueTable extends Migration
             $table->integer('item_id')->unsigned()->unique();
             $table->enum('status', [
                 Queue::STATUS_ACTIVE,
-                Queue::STATUS_SEEN,
                 Queue::STATUS_PERMANENT,
                 Queue::STATUS_RETIRED,
             ]);
