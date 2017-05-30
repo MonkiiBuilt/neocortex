@@ -87,9 +87,10 @@ console.log(fetchedItem);
             // Used by child Items to trigger an advance to the next Item
             next() {
                 let nextActiveItem = ((this.items.length - 1) === this.activeItem) ? 0 : (this.activeItem + 1);
-console.log('nextActiveItem',nextActiveItem);
+                console.log('nextActiveItem',nextActiveItem);
+
                 // Periodically refresh the queue from the server
-                if (this.activeItem === 0) {
+                if (nextActiveItem === 0) {
                     // Only attempt to fetch when we go back to the start, as
                     // item indexes may change
                     this.fetchItems();
@@ -100,6 +101,8 @@ console.log('nextActiveItem',nextActiveItem);
                 if (this.activeItem !== nextActiveItem) {
                     this.activeItem = nextActiveItem;
                 } else {
+                    // There is only one item in the list, we do this to force
+                    // an update so that the 'next' method keeps getting called
                     this.activeItem = -1;
                     this.$nextTick(function() {
                         this.activeItem = 0;
