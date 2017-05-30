@@ -75,7 +75,10 @@ class ItemController extends Controller
             return redirect()->route('home');
         }
 
-        return redirect('item.create')->with('errors', 'Could not parse URL');
+        return redirect()
+            ->route('item.create')
+            ->withInput()
+            ->withErrors(['url' => CreateFormRequest::$messages['url.invalid']]);
     }
 
     /**
