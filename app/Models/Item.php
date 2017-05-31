@@ -40,6 +40,7 @@ class Item extends Model
         Items\Video::class,
         Items\YouTube::class,
         Items\Vimeo::class,
+        Items\Weather::class,
     ];
 
     // Minimum needed to save an item: owner, what type of item, and serialised details
