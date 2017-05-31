@@ -9,7 +9,8 @@
         "laravel/framework": "5.4.*",
         "laravelcollective/html": "^5.3.0",
         "barryvdh/laravel-debugbar": "^2.3",
-        "nanigans/single-table-inheritance": "0.7.*"
+        "nanigans/single-table-inheritance": "0.7.*",
+        "neomerx/json-api": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
