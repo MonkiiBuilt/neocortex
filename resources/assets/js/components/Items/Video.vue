@@ -7,6 +7,15 @@
     </div>
 </template>
 
+<style lang="sass">
+    .item-video {
+        video {
+            width: 100%;
+            height: 100%;
+        }
+    }
+</style>
+
 <script>
     export default {
         props: {
