@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Items\Image;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Queue extends Model
 {
@@ -39,6 +40,7 @@ class Queue extends Model
      * @return bool Returns true if the item is ready for retirement.
      */
     public function shouldRetire() {
+        \Log::debug("Checking item {$this->item->id} for retirement");
         return $this->item->shouldRetire($this);
     }
 
@@ -65,6 +67,8 @@ class Queue extends Model
                 is_array($columns) ? $columns : func_get_args()
             );
     }
+
+
     /**
      * Get all of the models from the database who have an active status but
      * should be retired.
@@ -72,12 +76,51 @@ class Queue extends Model
      * @param  array|mixed  $columns
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
-    public static function allReadyForRetirement($columns = ['*'])
+    public static function allReadyToRetire()
     {
-        return static::allActive()
-            ->filter(function ($value, $key) {
-                return $value->shouldRetire();
+        // Basic query to fetch active items
+        $readyToRetireQuery = DB::table('queue')
+            ->join('items', 'queue.item_id', '=', 'items.id')
+            ->where('queue.status', QUEUE::STATUS_ACTIVE)
+            ->where(function ($query) {
+                static::itemTimeRetirementQueryBuilder($query);
             });
+        $results = $readyToRetireQuery->get(['queue.*']);
+
+        // Passing ->get() values directly to hydrate no longer works in
+        // Laravel 5 (for some reason), so manually reconstruct as array
+        $toRetire = collect($results)->map(function($x){ return (array) $x; })->toArray();
+
+        // Return a hydrated collection of Item/Image/etc objects
+        return self::hydrate($toRetire);
+    }
+
+    public static function itemTimeRetirementQueryBuilder($itemRetireQuery) {
+
+        $itemTypeMap = Item::getSingleTableTypeMap();
+
+        // Find a class that matches the type attribute
+        $itemTypesWithFilters = [];
+        foreach ($itemTypeMap as $typeValue => $typeClass) {
+            // If a match is found, return an instance of the matching class
+            if (method_exists($typeClass, 'readyToRetireTypeQueryCondition')) {
+                // Add a conditional to the query to find items that are ready
+                // to retire based on item-specific criteria
+                $itemRetireQuery->orWhere(function($query) use ($typeClass) {
+                    $typeClass::readyToRetireTypeQueryCondition($query);
+                });
+
+                // Record items with specific filtering logic
+                $itemTypesWithFilters[] = $typeValue;
+            }
+        }
+
+        // Add a catch all retirement filter for item types without their own
+        // specific logic
+        $itemRetireQuery->orWhere(function ($query) use ($itemTypesWithFilters) {
+            $query->whereNotIn('items.'. Item::getTypeField(), $itemTypesWithFilters);
+            Item::readyToRetireQueryCondition($query);
+        });
     }
 
     /**

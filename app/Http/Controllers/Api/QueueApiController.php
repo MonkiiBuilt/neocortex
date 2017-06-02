@@ -16,10 +16,11 @@ class QueueApiController extends JsonApiController
      */
     public function index()
     {
-        // Before loading the queue, check for queue entroes that should be
+        // Before loading the queue, check for queue entries that should be
         // retired
-        $entriesToRetire = Queue::allReadyForRetirement();
+        $entriesToRetire = Queue::allReadyToRetire();
         foreach ($entriesToRetire as $tiredEntry) {
+            \Log::debug("Ready to retire queue id: {$tiredEntry->id} of type ". get_class($tiredEntry));
             $tiredEntry->retire();
             $tiredEntry->save();
         }

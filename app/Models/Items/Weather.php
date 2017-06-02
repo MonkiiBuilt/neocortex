@@ -45,11 +45,13 @@ class Weather extends Item
     /**
      * The weather never gets old.
      *
-     * @param Queue $queueEntry
+     * @param $query
      * @return bool
      */
-    public function shouldRetire(Queue $queueEntry) {
-        return false;
+    public static function readyToRetireTypeQueryCondition($query) {
+        // This method adds no conditions to check for weather items to retire,
+        // but its existence causes weather items to be exempt from the default
+        // retirement logic
     }
 
 

@@ -3,9 +3,13 @@
 namespace App\Models\Items;
 
 use App\Models\Item;
+use App\Models\Queue;
+use Carbon\Carbon;
 
 class Image extends Item
 {
+    const IMAGE_ACTIVE_MINUTES = 180;
+
     /**
      * The value of the item.type field which indicates this item class.
      *
@@ -44,6 +48,37 @@ class Image extends Item
      */
     public static function matchByHeaders($headers) {
         return 0;
+    }
+
+
+    /**
+     * Returns true if an Item should be retired from the queue.
+     *
+     * @param Builder $query
+     * Item.
+     * @return bool
+     */
+    public static function readyToRetireTypeQueryCondition($query) {
+        // Add a clause to an existing query that will find items that meet
+        // the criteria for retirement
+        $typeField = static::$singleTableTypeField;
+        $typeValue = self::$singleTableType;
+
+        // Only apply this logic to Image items
+        $query->where('items.'. $typeField, $typeValue);
+
+        // Item images live for a different amount of time
+        $query->where('queue.created_at', '<', Carbon::now()->subMinutes(self::IMAGE_ACTIVE_MINUTES));
+
+        // Do not let the last active Image be retired
+        $lastActiveImage = \DB::table('queue')
+                        ->join('items', 'queue.item_id', '=', 'items.id')
+                        ->where('queue.status', QUEUE::STATUS_ACTIVE)
+                        ->where('items.'. $typeField, $typeValue)
+                        ->orderBy('queue.created_at', 'DESC')
+                        ->limit(1)
+                        ->pluck('queue.id');
+        $query->where('queue.id', '<>', $lastActiveImage);
     }
 
 }
