@@ -1,7 +1,8 @@
 <template>
-    <div class="item-video">
+    <div class="item-video"
+         :class="{ component__active: active }">
         <video autoplay loop>
-            <source :src="webmUrl" type="video/webm">
+<!--            <source :src="webmUrl" type="video/webm">-->
             <source :src="mp4Url" type="video/mp4">
         </video>
     </div>
@@ -22,6 +23,11 @@
             details: {
                 type: Object,
                 required: true
+            },
+            index: Number,
+            active: {
+                  type: Boolean,
+                  default: false
             },
             // This can be used by an item to trigger a transition to the
             // next Item in the ItemCollection

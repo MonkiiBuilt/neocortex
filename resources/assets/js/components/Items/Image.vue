@@ -45,7 +45,7 @@
 
         methods: {
             waitForNext() {
-                // For a basic image, cycle after 10 seconds
+                // For a basic image, cycle after 4 seconds
                 if (this.active) {
                     window.setTimeout(this.next, 4000)
                 }
