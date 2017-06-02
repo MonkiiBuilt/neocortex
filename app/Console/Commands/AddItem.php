@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Factories\ItemFactory;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class AddItem extends Command
