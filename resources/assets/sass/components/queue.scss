@@ -1,3 +1,16 @@
+.queue-table {
+    width: 100%;
+
+    td {
+        border-bottom: 1px solid #EEEEEE;
+        padding: 0.6rem 0;
+    }
+
+    .item-image {
+        width: 10rem;
+        height: 10rem;
+    }
+}
 
 .queue {
 

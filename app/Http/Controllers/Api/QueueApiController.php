@@ -37,7 +37,7 @@ class QueueApiController extends JsonApiController
         // Keep the weather item up to date
         $this->refreshWeather($models);
 
-\Debugbar::debug($models);
+        \Debugbar::debug($models);
 
         // Encode the model data for json:api consumption
         $encoder = Encoder::instance($this->modelSchemaMappings, $this->encoderOptions);

@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Item;
+use App\Models\Queue;
+//use Illuminate\Support\Facades\Redirect;
 
 class QueueController extends Controller
 {
@@ -23,8 +24,19 @@ class QueueController extends Controller
      */
     public function index()
     {
-        $items = Item::withTrashed()->orderBy('id', 'DESC')->paginate(10);
+        $entries = Queue::allActive($columns = ['*'], $include_permanent = FALSE);
 
-        return view('queue.index', ['items' => $items]);
+        return view('queue.index', ['entries' => $entries]);
+    }
+
+    public function destroy($id) {
+      $entry = Queue::findOrFail($id);
+
+      $entry->retire();
+      $entry->save();
+
+      flash('Item deleted');
+      return redirect()->route('queue');
+
     }
 }

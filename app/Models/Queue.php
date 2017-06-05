@@ -59,10 +59,14 @@ class Queue extends Model
      * @param  array|mixed  $columns
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
-    public static function allActive($columns = ['*'])
+    public static function allActive($columns = ['*'], $include_permanent = TRUE)
     {
+
+        $statues = $include_permanent ? [static::STATUS_ACTIVE, static::STATUS_PERMANENT] : [static::STATUS_ACTIVE];
+
         return (new static)->newQuery()
-            ->where('status', static::STATUS_ACTIVE)
+            //->where('status', static::STATUS_ACTIVE)
+            ->whereIn('status', $statues)
             ->get(
                 is_array($columns) ? $columns : func_get_args()
             );

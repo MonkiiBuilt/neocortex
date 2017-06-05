@@ -19,5 +19,8 @@ Auth::routes();
 // Resource routes (index, create, store, etc) for items
 Route::resource('item', 'ItemController');
 
+// Resource routes (destroy) for queue entry
+Route::resource('queue', 'QueueController');
+
 // Queue
 Route::get('/queue', ['uses' => 'QueueController@index', 'as' => 'queue']);

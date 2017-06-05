@@ -11,33 +11,42 @@
                 <div class="panel-heading">Item queue</div>
                 <div class="panel-body">
 
-                    <div class="queue">
-                        @foreach($items as $item)
+                    @include('flash::message')
+
+                    <table class="queue-table">
+
+                        <tr>
+                            <td>Type</td>
+                            <td>Preview</td>
+                            <td>Actions</td>
+                        </tr>
+
+                        @foreach($entries as $entry)
+
                             @php
-
+                            $item =& $entry->item;
                             @endphp
-                            <div class="queue-item" data-id="{{ $item->id }}">
-                                <div class="queue-check">
-                                    <input type="checkbox" name="queued" value="Queued" {{ (!$item->trashed()) ? 'checked="checked"' : "" }}>
-                                </div>
 
-                                <div class="queue-content">
+                            <tr data-id="{{ $entry->id }}">
+
+                                <td>
+                                    {{ $item->type }}
+                                </td>
+
+                                <td>
                                     @if (View::exists("items.partials.{$item->type}"))
                                         @include("items.partials.{$item->type}", ['item' => $item])
                                     @endif
-                                </div>
+                                </td>
 
-                                <div class="queue-duration">
-                                    <input type="number" name="duration" max= "1800000" min= "1000" step= "1000" value="{{ $item->details['duration'] }}"> milliseconds
-                                </div>
-                            </div>
-                            <hr>
+                                <td>
+                                    {!! Form::open(['route' => ['queue.destroy', $item->id], 'method' => 'DELETE']) !!}
+                                        <input type="submit" value="Remove">
+                                    {!! Form::close() !!}
+                                </td>
+                            </tr>
                         @endforeach
-                    </div>
-
-                    <div class="queue__pagination">
-                        {{ $items->links('queue.partials.pagination') }}
-                    </div>
+                    </table>
 
                 </div>
             </div>

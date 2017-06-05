@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ elixir('css/app.css') }}">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
     <!-- Scripts -->
     <script>
@@ -53,6 +54,9 @@
                             <li><a href="{{ url('/login') }}">Login</a></li>
                             <li><a href="{{ url('/register') }}">Register</a></li>
                         @else
+                            <li class="">
+                                {{ link_to_route('queue', $title = 'Queue', $parameters = [], $attributes = ['class' => 'btn']) }}
+                            </li>
                             <li class="">
                                 {{ link_to_route('item.create', $title = 'Create', $parameters = [], $attributes = ['class' => 'btn']) }}
                             </li>

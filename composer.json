@@ -10,7 +10,9 @@
         "laravelcollective/html": "^5.3.0",
         "barryvdh/laravel-debugbar": "^2.3",
         "nanigans/single-table-inheritance": "0.7.*",
-        "neomerx/json-api": "^1.0"
+        "neomerx/json-api": "^1.0",
+        "rtconner/laravel-kint": "~2.0",
+        "laracasts/flash": "^3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
