@@ -59,6 +59,11 @@ class Item extends Model
         'created' => ItemCreated::class,
     ];
 
+    /**
+     * When items are first added to the queue they are created with this status.
+     *
+     * @var string
+     */
     public $initial_queue_status = Queue::STATUS_ACTIVE;
 
     /**

@@ -18,13 +18,6 @@ class Image extends Item
     protected static $singleTableType = 'image';
 
     /**
-     * When items are first added to the queue they are created with this status.
-     *
-     * @var string
-     */
-    public $initial_queue_status = Queue::STATUS_PERMANENT;
-
-    /**
      * Given a URL, provide a weighted value indicating whether the URL is
      * likely to served by this Item type.
      *
