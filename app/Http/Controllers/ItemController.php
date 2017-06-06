@@ -58,7 +58,7 @@ class ItemController extends Controller
         // Attempt to create a new item from the provided URL
         $item = ItemFactory::create([
             'user_id' => $user->id,
-            'details'=>['url' => $url]
+            'details' => ['url' => $url]
         ]);
 
         // If a valid item type couldn't be found, don't save to the db

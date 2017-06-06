@@ -55,10 +55,10 @@
                             <li><a href="{{ url('/register') }}">Register</a></li>
                         @else
                             <li class="">
-                                {{ link_to_route('queue', $title = 'Queue', $parameters = [], $attributes = ['class' => 'btn']) }}
+                                {{ link_to_route('item.create', $title = 'Create', $parameters = [], $attributes = ['class' => 'btn']) }}
                             </li>
                             <li class="">
-                                {{ link_to_route('item.create', $title = 'Create', $parameters = [], $attributes = ['class' => 'btn']) }}
+                                {{ link_to_route('queue', $title = 'Queue', $parameters = [], $attributes = ['class' => 'btn']) }}
                             </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">

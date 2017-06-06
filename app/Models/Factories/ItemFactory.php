@@ -14,6 +14,9 @@ class ItemFactory
      */
     public static function create(array $attributes) {
 
+        // Replace .gifv with .mp4 if possible...
+        static::checkUrl($attributes['details']['url']);
+
         // If the provided attributes don't include a type, try to determine
         // the item type based on what's provided
         if (!Item::getTypeFrom($attributes)) {
@@ -35,7 +38,38 @@ class ItemFactory
         throw new UnknownItemTypeException();
     }
 
+    /**
+     * Gifv files often have mp4 files in the same location. Chrome prefers
+     * the mp4s to gifv so swap em over if we can.
+     *
+     * @param $url
+     */
+    private static function checkUrl(&$url) {
+        $path_info = pathinfo($url);
+        if($path_info['extension'] == 'gifv') {
+            $mp4_path = str_replace('.gifv', '.mp4', $url);
+            if(static::checkPathExists($mp4_path)) {
+                $url = $mp4_path;
+            }
+        }
+    }
 
+    /**
+     * Use curl to check if a remote file exists.
+     *
+     * @param $path
+     *
+     * @return bool
+     */
+    private static function checkPathExists($path) {
+        $ch = curl_init($path);
+        curl_setopt($ch, CURLOPT_NOBODY, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_exec($ch);
+        $resp_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        return $resp_code == 200;
+    }
 
     /**
      * Attempt to identify the item type based on the available attributes.

@@ -233,4 +233,15 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration specific to how neocortex operates.
+    |
+    */
+
+    'video_max_play_length' => 120,
+
 ];
