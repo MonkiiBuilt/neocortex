@@ -6,13 +6,13 @@
  * Time: 1:05 PM
  */
 
-namespace App\Libs;
+namespace App\Libs\BomWeather;
 
-class BOMWeatherStation
+class WeatherStation
 {
-    public function __construct($xmlSource, $stationId)
+    public function __construct($observationsXmlUrl, $stationId)
     {
-        $xml = static::parseWeatherXML($xmlSource);
+        $xml = simplexml_load_file($observationsXmlUrl);
         $this->stationId = $stationId;
 
         foreach ($xml->observations->station as $station) {
@@ -23,26 +23,6 @@ class BOMWeatherStation
         }
 
         // Station was not found, throw Exception?
-    }
-
-    /**
-     * @param $file
-     * @return \SimpleXMLElement Weather XML data
-     */
-    protected static function parseWeatherXML($file)
-    {
-        if ($fileHandle = fopen($file, 'r')) {
-            // Read the file into a string
-            $xmlstr = '';
-            while (!feof($fileHandle)) {
-                $xmlstr .= fgets($fileHandle, 4096);
-            }
-            // Close the file when finished reading
-            fclose($fileHandle);
-
-            // Parse the XML from the file into a SimplXMLElement
-            return new \SimpleXMLElement($xmlstr);
-        }
     }
 
     protected function constructFromStation($station) {
