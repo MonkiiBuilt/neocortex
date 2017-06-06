@@ -30,7 +30,7 @@ class AddNewItemToQueue
         // Add the new Item directly to the Queue (do not pass GO)
         $queueEntry = new Queue([
             'item_id' => $event->item->id,
-            'status' => Queue::STATUS_ACTIVE,
+            'status' => $event->item->initial_queue_status,
             'views' => 0,
         ]);
         $queueEntry->save();

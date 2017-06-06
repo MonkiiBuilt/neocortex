@@ -19,6 +19,13 @@ class Weather extends Item
     protected static $singleTableType = 'weather';
 
     /**
+     * When weather items are added to the queue they have a permanent status.
+     *
+     * @var string
+     */
+    public $initial_queue_status = Queue::STATUS_PERMANENT;
+
+    /**
      * Fetch up to date weather data and save it to this item's details.
      */
     public function refresh()

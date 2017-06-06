@@ -59,6 +59,8 @@ class Item extends Model
         'created' => ItemCreated::class,
     ];
 
+    public $initial_queue_status = Queue::STATUS_ACTIVE;
+
     /**
      * Get the user that owns the item.
      */

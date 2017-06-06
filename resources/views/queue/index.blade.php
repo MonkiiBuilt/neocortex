@@ -40,7 +40,7 @@
                                 </td>
 
                                 <td>
-                                    {!! Form::open(['route' => ['queue.destroy', $item->id], 'method' => 'DELETE']) !!}
+                                    {!! Form::open(['route' => ['queue.destroy', $entry->id], 'method' => 'DELETE']) !!}
                                         <input type="submit" value="Remove">
                                     {!! Form::close() !!}
                                 </td>
