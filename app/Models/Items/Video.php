@@ -64,5 +64,50 @@ class Video extends Item
         return 0;
     }
 
+    /**
+     * Check if we can replace the gifv extension with mp4
+     *
+     * @param  array  $options
+     * @return bool
+     */
+    public function save(array $options = [])
+    {
+        // If no url is provided, we can't save this type
+        if (!isset($this->details['url'])) {
+            throw new Exception();
+        }
+
+        $details = $this->details;
+
+        $path_info = pathinfo($details['url']);
+        if($path_info['extension'] == 'gifv') {
+            $mp4_path = str_replace('.gifv', '.mp4', $details['url']);
+            if($this->checkPathExists($mp4_path)) {
+                $details['url'] = $mp4_path;
+                $this->details = $details;
+            }
+        }
+
+        // Back to Eloquent Model->save to persist to db
+        return parent::save($options);
+    }
+
+    /**
+     * Use curl to check if a remote file exists.
+     *
+     * @param $path
+     *
+     * @return bool
+     */
+    private function checkPathExists($path) {
+        $ch = curl_init($path);
+        curl_setopt($ch, CURLOPT_NOBODY, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_exec($ch);
+        $resp_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        return $resp_code == 200;
+    }
+
 
 }
