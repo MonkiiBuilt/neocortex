@@ -47,6 +47,11 @@ class Image extends Item
      * @return integer The 'weight' of a possible match, with 0 meaning "no match".
      */
     public static function matchByHeaders($headers) {
+        $image_mime_types = ['image/jpeg', 'image/pjpeg', 'image/jpeg', 'image/pjpeg', 'image/gif', 'image/png'];
+        if(!empty($headers['Content-Type']) && in_array($headers['Content-Type'], $image_mime_types)) {
+            return 1;
+
+        }
         return 0;
     }
 

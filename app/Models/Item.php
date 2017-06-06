@@ -148,8 +148,11 @@ class Item extends Model
     public static function identifyItemTypeByURL($url) {
         $matches = [];
 
+        $type_map = static::getSingleTableTypeMap();
+
         \Log::debug("Identifying item type at $url");
-        foreach (static::getSingleTableTypeMap() as $itemType => $itemClass) {
+
+        foreach ($type_map as $itemType => $itemClass) {
             // Check how likely each item type is to match this URL
             $weight = $itemClass::matchByUrl($url);
             if ($weight > 0) {
@@ -168,9 +171,9 @@ class Item extends Model
         // If no match was found, make a request for the URL and try to
         // classify it based on the returned headers
         $headers = self::requestUrlHeaders($url);
-        foreach (static::getSingleTableTypeMap() as $itemType => $itemClass) {
+        foreach ($type_map as $itemType => $itemClass) {
             // Add possible matches
-//            \Log::debug("checking {$itemType::$type}");
+            \Log::debug("checking {$itemType::$type}");
             $weight = $itemClass::matchByHeaders($headers);
             if ($weight > 0) {
                 $matches[$weight] = $itemType;
