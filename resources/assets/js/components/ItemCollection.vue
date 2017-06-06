@@ -21,13 +21,13 @@
         },
 
         mounted() {
-            console.log('ItemCollection mounted')
+            // Once component is mounted, hit the API to fetch Items to display
             this.fetchItems();
         },
 
         methods: {
             fetchItems() {
-                console.log('ItemCollection fetching items');
+                console.log('--> ItemCollection fetching items');
                 this.$http.get('queue').then((response) =>
                 {
                     console.log(this.items);
@@ -35,7 +35,7 @@
                     // We extract all the "item" objects
                     for (let fetchedEntry in response.data.data) {
                         let fetchedItem = response.data.data[fetchedEntry].attributes.item;
-console.log(fetchedItem);
+console.log('--> fetchedItem', fetchedItem);
                         // Mark each Item as "seen" because it was seen in the
                         // API response. Afterwards we will remove all Items
                         // that were not "seen" as we know they've been removed
