@@ -18,7 +18,12 @@ Auth::routes();
 
 // Resource routes (index, create, store, etc) for items
 Route::resource('item', 'ItemController');
+
+// Route to post to to create a new item with a random image
 Route::post('/item/lucky', ['uses' => 'ItemController@randomImage', 'as' => 'item.randomImage']);
+
+// Route just to dispay the url of a random image
+Route::get('lucky-url', 'ItemController@randomImageUrl');
 
 // Resource routes (destroy) for queue entry
 Route::resource('queue', 'QueueController');

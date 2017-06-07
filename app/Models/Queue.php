@@ -65,7 +65,6 @@ class Queue extends Model
         $statues = $include_permanent ? [static::STATUS_ACTIVE, static::STATUS_PERMANENT] : [static::STATUS_ACTIVE];
 
         return (new static)->newQuery()
-            //->where('status', static::STATUS_ACTIVE)
             ->whereIn('status', $statues)
             ->get(
                 is_array($columns) ? $columns : func_get_args()

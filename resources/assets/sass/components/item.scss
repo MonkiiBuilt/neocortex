@@ -18,6 +18,10 @@
     transform: translateX(0);
 }
 
+.item-clickable {
+	cursor: pointer;
+}
+
 .item-image {
     top: 0;
     bottom: 0;

@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Nanigans\SingleTableInheritance\SingleTableInheritanceTrait;
+use Illuminate\Support\Facades\DB;
 
 class Item extends Model
 {
@@ -253,5 +254,38 @@ class Item extends Model
         // Add a clause to an existing query that will find items that meet
         // the criteria for retirement, ie they are past a certain age
         $query->where('queue.created_at', '<', Carbon::now()->subMinutes(self::ITEM_ACTIVE_MINUTES));
+    }
+
+    /**
+     * Return an array of all items urls
+     *
+     * @return mixed
+     */
+    public static function allUrls()
+    {
+        $query = DB::table('items')
+                   ->where('type', 'image');
+        return $query->select(DB::raw("details->>'$.url' as url"))->pluck('url')->toArray();
+    }
+
+    /**
+     * Delete unused images from unsplash images folder
+     */
+    public static function deleteUnusedImages() {
+        // Fetch all urls that Items are actually using
+        $valid_urls = Item::allUrls();
+
+        // Fetch a list of all unsplash images
+        $files = \File::allFiles(public_path() . '/unsplash_images');
+
+        // Delete the ones not in use.
+        foreach($files as $file) {
+            $info = pathinfo($file);
+            $file_url = '/unsplash_images/' . $info['basename'];
+            if(!in_array($file_url, $valid_urls)) {
+                \Log::debug("Deleting $file_url as it is not in use");
+                \File::delete($file);
+            }
+        }
     }
 }

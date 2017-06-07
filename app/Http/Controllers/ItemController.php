@@ -42,7 +42,6 @@ class ItemController extends Controller
      */
     public function create()
     {
-        \Log::debug('build');
         return view('items.create');
     }
 
@@ -54,9 +53,6 @@ class ItemController extends Controller
      */
     public function store(CreateFormRequest $request)
     {
-
-        \Debug::log('store');
-
         $url = $request->input('url');
         $user = auth()->user();
 
@@ -94,13 +90,17 @@ class ItemController extends Controller
      */
     public function randomImage(CreateRandomImageFormRequest $request)
     {
-        switch(rand(0,1)) {
-            case 0:
-                $url = $this->randomImageUnsplash();
-                break;
-            case 1:
-                $url = $this->randomImageReddit();
-                break;
+        $url = $request->input('randImgUrl');
+
+        if(empty($url)) {
+            switch(rand(0,1)) {
+                case 0:
+                    $url = $this->randomImageUnsplash();
+                    break;
+                case 1:
+                    $url = $this->randomImageReddit();
+                    break;
+            }
         }
 
         $user = auth()->user();
@@ -122,6 +122,18 @@ class ItemController extends Controller
             ->route('item.create')
             ->withInput()
             ->withErrors(['url' => CreateFormRequest::$messages['url.invalid']]);
+    }
+
+    public function randomImageUrl() {
+        switch(rand(0,1)) {
+            case 0:
+                $url = $this->randomImageUnsplash();
+                break;
+            case 1:
+                $url = $this->randomImageReddit();
+                break;
+        }
+        die($url);
     }
 
     /**

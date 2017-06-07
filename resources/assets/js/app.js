@@ -23,6 +23,9 @@ Vue.component('item-youtube', require('./components/Items/YouTube.vue'));
 Vue.component('item-vimeo', require('./components/Items/Vimeo.vue'));
 Vue.component('item-weather', require('./components/Items/Weather.vue'));
 
+require('./queueIndex.js');
+require('./randomImage.js');
+
 if (window.location.pathname == '/') {
     const app = new Vue({
         el: '#main',

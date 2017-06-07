@@ -1,2 +1,2 @@
 
-<div class="item-image" style="background-image: url('{{ $item->details['url'] }}');"></div>
+<div class="item-image item-clickable" style="background-image: url('{{ $item->details['url'] }}');" data-url="{{ $item->details['url'] }}"></div>
