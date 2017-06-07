@@ -173,7 +173,7 @@ class Item extends Model
         $headers = self::requestUrlHeaders($url);
         foreach ($type_map as $itemType => $itemClass) {
             // Add possible matches
-            \Log::debug("checking {$itemType::$type}");
+//            \Log::debug("checking {$itemType::$type}");
             $weight = $itemClass::matchByHeaders($headers);
             if ($weight > 0) {
                 $matches[$weight] = $itemType;

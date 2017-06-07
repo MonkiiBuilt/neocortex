@@ -7,6 +7,7 @@
 
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
+
             <div class="panel panel-default">
                 <div class="panel-heading">Create from online url</div>
                 <div class="panel-body">
@@ -35,6 +36,24 @@
                     {!! Form::close() !!}
                 </div>
             </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Add a random image</div>
+                <div class="panel-body">
+                    {!! Form::open(['route' => 'item.randomImage', 'class' => 'form-horizontal']) !!}
+
+                    <div class="form-group">
+                        <label for="email" class="col-md-4 control-label"></label>
+
+                        <div class="col-md-6">
+                            <input type="submit" name="btnUrl" class="btn btn-primary" value="I'm feeling lucky" />
+                        </div>
+                    </div>
+
+                    {!! Form::close() !!}
+                </div>
+            </div>
+
         </div>
     </div>
 

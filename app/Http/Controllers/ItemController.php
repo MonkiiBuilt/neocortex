@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Libs\Vimeo;
 use App\Libs\YouTube;
 use App\Http\Requests\CreateFormRequest;
+use App\Http\Requests\CreateRandomImageFormRequest;
 use App\Models\Factories\ItemFactory;
 use App\Models\Items\Image;
 use Illuminate\Support\Facades\View;
@@ -41,6 +42,7 @@ class ItemController extends Controller
      */
     public function create()
     {
+        \Log::debug('build');
         return view('items.create');
     }
 
@@ -52,6 +54,9 @@ class ItemController extends Controller
      */
     public function store(CreateFormRequest $request)
     {
+
+        \Debug::log('store');
+
         $url = $request->input('url');
         $user = auth()->user();
 
@@ -79,6 +84,73 @@ class ItemController extends Controller
             ->route('item.create')
             ->withInput()
             ->withErrors(['url' => CreateFormRequest::$messages['url.invalid']]);
+    }
+
+    /**
+     * Store a random image in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function randomImage(CreateRandomImageFormRequest $request)
+    {
+        switch(rand(0,1)) {
+            case 0:
+                $url = $this->randomImageUnsplash();
+                break;
+            case 1:
+                $url = $this->randomImageReddit();
+                break;
+        }
+
+        $user = auth()->user();
+
+        // Attempt to create a new item from the provided URL
+        $item = ItemFactory::create([
+            'user_id'  => $user->id,
+            'details'  => ['url' => $url],
+            'type'     => 'image',
+        ]);
+
+        // If everything looks fine, redirect to home where the item should
+        // have been added to the queue
+        if ($item->save()) {
+            return redirect()->route('home');
+        }
+
+        return redirect()
+            ->route('item.create')
+            ->withInput()
+            ->withErrors(['url' => CreateFormRequest::$messages['url.invalid']]);
+    }
+
+    /**
+     * Return the URL of a random image from reddit pics
+     *
+     * @return string
+     */
+    private function randomImageReddit() {
+        $reddit_url = 'https://www.reddit.com/r/pics/top/.json?sort=top&t=day';
+        $data = file_get_contents($reddit_url);
+        $data = json_decode($data);
+        $num_posts = count($data->data->children);
+        $child = $data->data->children[rand(0, $num_posts - 1)];
+        return $child->data->preview->images[0]->source->url;
+    }
+
+    /**
+     * Return the url of a random image from unsplash.
+     * We store the image locally because otherwise it will be different on
+     * every request.
+     *
+     * @return string
+     */
+    private function randomImageUnsplash() {
+        $remote_url = 'https://unsplash.it/1280/720?random';
+        $image = file_get_contents($remote_url);
+        $local_name = 'unsplash-' . time() . '.jpg';
+        \Storage::disk('public')->put('unsplash_images/' . $local_name, $image);
+        return '/unsplash_images/' . $local_name;
     }
 
     /**
