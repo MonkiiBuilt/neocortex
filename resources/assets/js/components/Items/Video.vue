@@ -1,7 +1,7 @@
 <template>
     <div class="item-video"
          :class="{ component__active: active }">
-        <video autoplay loop>
+        <video>
 <!--            <source :src="webmUrl" type="video/webm">-->
             <source :src="mp4Url" type="video/mp4">
         </video>
@@ -19,6 +19,12 @@
 
 <script>
     export default {
+        data() {
+            return {
+                video: null,
+                duration: null,
+            };
+        },
         props: {
             details: {
                 type: Object,
@@ -55,18 +61,34 @@
         },
 
         mounted() {
-            this.waitForNext();
+            // Cache a reference to the video element
+            this.video = this.$el.querySelector('video');
+
+            this.video.addEventListener('loadedmetadata', () => {
+                // Once the video is loaded, we'll know its duration
+                this.duration = this.video.duration;
+
+                // Wait until we know the duration to start the timer for
+                // proceeding to the next item
+                this.becameActive();
+            });
         },
 
         updated() {
-            this.waitForNext();
+            this.becameActive();
         },
 
         methods: {
+            becameActive() {
+                // Start playing the video when we're ready
+                this.video.play();
+
+                this.waitForNext();
+            },
             waitForNext() {
                 // For a basic image, cycle after 10 seconds
                 if (this.active) {
-                    window.setTimeout(this.next, 10000)
+                    window.setTimeout(this.next, this.duration * 1000)
                 }
             }
         }
