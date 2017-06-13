@@ -19,7 +19,7 @@ class CityForecast
         6 => 'haze',
         8 => 'light-rain',
         9 => 'wind',
-        10 => 'flog',
+        10 => 'fog',
         11 => 'showers',
         12 => 'rain',
         13 => 'dust',
