@@ -6,6 +6,7 @@
  */
 
 require('./bootstrap');
+var App = require('./App.vue');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -15,6 +16,7 @@ require('./bootstrap');
 
 Vue.http.options.root = 'api';
 
+Vue.component('app', App);
 Vue.component('item-collection', require('./components/ItemCollection.vue'));
 Vue.component('item', require('./components/Item.vue'));
 Vue.component('item-image', require('./components/Items/Image.vue'));
@@ -26,22 +28,9 @@ Vue.component('item-weather', require('./components/Items/Weather.vue'));
 require('./queueIndex.js');
 require('./randomImage.js');
 
-if (window.location.pathname == '/') {
+if (window.location.pathname === '/') {
     const app = new Vue({
-        el: '#main',
-
-        data: {
-            user: [],
-            items: []
-        },
-
-        template: '<div id="main"><item-collection></item-collection></div>',
-
-        ready () {
-        },
-
-        methods: {
-        }
+      el: '#main',
+      template: '<app/>'
     });
-
 }
