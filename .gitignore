@@ -10,3 +10,4 @@ Homestead.yaml
 .env
 .vagrant
 public/unsplash_images
+public/uploads

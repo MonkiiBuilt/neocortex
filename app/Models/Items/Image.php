@@ -18,6 +18,23 @@ class Image extends Item
     protected static $singleTableType = 'image';
 
     /**
+     * Options for the processing of images. With titles and descriptions.
+     */
+    public static $processingOptions =
+        [[
+            'filter' => "",
+            'title'  => "No Processing",
+            'desc'   => "Image will be displayed as is."
+          ],[
+//            'filter' => "Banderas",
+//            'title'  => "Antonio Banderas-ize Image",
+//            'desc'   => "Inserts JPG/JPEG as screenshot in Antonio Banderas reaction gif. Image needs to be 16:9 (800x450)"
+            'filter' => "Nothing",
+            'title'  => "Coming Soon!",
+            'desc'   => "Image Processing options coming soon."
+        ]];
+
+    /**
      * Given a URL, provide a weighted value indicating whether the URL is
      * likely to served by this Item type.
      *

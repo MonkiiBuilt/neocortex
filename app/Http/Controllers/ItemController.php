@@ -42,18 +42,30 @@ class ItemController extends Controller
      */
     public function create()
     {
-        return view('items.create');
+        // Grab the options for the Upload Image processing
+        $po = \App\Models\Items\Image::$processingOptions;
+
+        return view('items.create', ['processingOptions' => $po]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage. Process if requested.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(CreateFormRequest $request)
     {
-        $url = $request->input('url');
+        // Are we uploading?
+        if (isset($_POST['btnUpload'])) {
+            $url = $this->handleUpload();
+
+            // Check if processing required
+        }
+        else {
+            $url = $request->input('url');
+        }
+
         $user = auth()->user();
 
         // Attempt to create a new item from the provided URL
@@ -80,6 +92,51 @@ class ItemController extends Controller
             ->route('item.create')
             ->withInput()
             ->withErrors(['url' => CreateFormRequest::$messages['url.invalid']]);
+    }
+
+    /**
+     * Store a random image in storage.
+     *
+     * @return string
+     */
+    public function handleUpload()
+    {
+        // Check if file upladoed
+        if (empty($_FILES)) {
+            return redirect()
+                ->route('item.create')
+                ->withInput()
+                ->withErrors(['upload' => CreateFormRequest::$messages['upload.toobig']]);
+        }
+
+        $urlPath    = "/uploads/";
+        $targetPath = public_path() . $urlPath;
+        if (!is_dir($targetPath)) mkdir($targetPath, 0755, true);
+
+        // Create unique filename
+        $targetParts = pathinfo($_FILES['upload']['name']);
+        $targetName  = uniqid() . "." . $targetParts['extension'];
+
+        // Check extension
+        $ext = strtolower($targetParts['extension']);
+        if ($ext != "jpg" && $ext != "jpeg" && $ext != "png" && $ext != "gif") {
+            return redirect()
+                ->route('item.create')
+                ->withInput()
+                ->withErrors(['upload' => CreateFormRequest::$messages['upload.notimage']]);
+        }
+
+        // Move file into correct position
+        $targetFile  = $targetPath . $targetName;
+        $moveSuccess = move_uploaded_file($_FILES['upload']['tmp_name'], $targetFile);
+        if (!$moveSuccess || !filesize($targetFile)) {
+            return redirect()
+                ->route('item.create')
+                ->withInput()
+                ->withErrors(['upload' => CreateFormRequest::$messages['upload.error']]);
+        }
+
+        return $urlPath . $targetName;
     }
 
     /**
