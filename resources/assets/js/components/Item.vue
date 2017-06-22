@@ -32,3 +32,35 @@
         }
 }
 </script>
+
+<style lang="sass">
+
+.item {
+    transform: translateX(-100%);
+}
+
+.item__full {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    overflow: auto;
+    background: #000;
+    cursor: none;
+}
+
+.item__active {
+    transform: translateX(0);
+}
+
+.item-clickable {
+    cursor: pointer;
+}
+
+.user-interactive .item__full {
+    cursor: default;
+}
+
+</style>
