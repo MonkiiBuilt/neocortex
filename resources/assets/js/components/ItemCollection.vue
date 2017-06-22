@@ -35,7 +35,7 @@
                     // We extract all the "item" objects
                     for (let fetchedEntry in response.data.data) {
                         let fetchedItem = response.data.data[fetchedEntry].attributes.item;
-console.log('--> fetchedItem', fetchedItem);
+
                         // Mark each Item as "seen" because it was seen in the
                         // API response. Afterwards we will remove all Items
                         // that were not "seen" as we know they've been removed
@@ -46,7 +46,15 @@ console.log('--> fetchedItem', fetchedItem);
                         let itemFound = false;
                         for (let queueEntry in this.items) {
                             let queueItem = this.items[queueEntry];
+                            // This queue item is already in the queue
                             if (queueItem.id === fetchedItem.id) {
+                                // If the fetched item is more up to date, we
+                                // should replace the item in the queue
+                                if (queueItem.updated_at < fetchedItem.updated_at) {
+                                  queueItem = fetchedItem;
+                                }
+
+                                // Mark the item as seen
                                 queueItem.seen = true;
                                 itemFound = true;
                                 break;
@@ -56,7 +64,6 @@ console.log('--> fetchedItem', fetchedItem);
                         // If the item was found in the current list, no need
                         // to add it
                         if (itemFound) {
-                            console.log("Item " + fetchedItem.id + " found");
                             continue;
                         }
 
