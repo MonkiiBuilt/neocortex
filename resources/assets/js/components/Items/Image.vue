@@ -36,19 +36,28 @@
         },
 
         mounted() {
-            this.waitForNext();
+            this.startIfActive();
         },
 
         updated() {
-            this.waitForNext();
+            this.startIfActive();
         },
 
         methods: {
-            waitForNext() {
-                // For a basic image, cycle after 10 seconds
-                if (this.active) {
-                    window.setTimeout(this.next, 10000)
+            startIfActive() {
+                if (!this.active) {
+                    return;
                 }
+
+                this.waitForNext();
+            },
+            waitForNext() {
+                if (this.nextTimeout) {
+                    window.clearTimeout(this.nextTimeout);
+                }
+
+                // For a basic image, cycle after 10 seconds
+                this.nextTimeout = window.setTimeout(this.next, 10000)
             }
         }
     }

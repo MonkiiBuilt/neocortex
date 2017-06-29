@@ -105,8 +105,6 @@
                 return this.details.readings.apparent_temp.value;
             },
             tempSymbol() {
-                console.log(this.details);
-                console.log(this.details.readings.apparent_temp.units);
                 switch(this.details.readings.apparent_temp.units) {
                     case "Celsius":
                         return "℃";
@@ -118,14 +116,22 @@
         },
 
         mounted() {
-            this.waitForNext();
+            this.startIfActive();
         },
 
         updated() {
-            this.waitForNext();
+            this.startIfActive();
         },
 
         methods: {
+            startIfActive() {
+                console.log('isActive?', this.active, this.details);
+                if (!this.active) {
+                    return;
+                }
+
+                this.waitForNext();
+            },
             weatherIconSrc(icon) {
                 return "/images/weather/" + icon + ".png";
             },
@@ -135,10 +141,12 @@
                 return "";
             },
             waitForNext() {
-                // For a basic image, cycle after 8 seconds
-                if (this.active) {
-                    window.setTimeout(this.next, 8000)
+                if (this.nextTimeout) {
+                    window.clearTimeout(this.nextTimeout);
                 }
+
+                // For weather, cycle after 8 seconds
+                this.nextTimeout = window.setTimeout(this.next, 8000)
             }
         }
     }

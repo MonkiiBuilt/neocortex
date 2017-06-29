@@ -46,23 +46,34 @@
         },
 
         mounted() {
-            this.waitForNext();
+            this.startIfActive();
         },
 
         updated() {
-            this.waitForNext();
+            this.startIfActive();
         },
 
         methods: {
-            waitForNext() {
-                // For youtube embed, cycle after video duration (+5 seconds)
-                if (this.active && this.details) {
+            startIfActive() {
+                if (!this.active) {
+                    return;
+                }
+
+                // Set the src of the iframe element to start playing
+                if (this.details) {
                     var src = $("#vid-"+this.index).attr("data-src");
                     $("#vid-"+this.index).attr("src", src);
 
-                    // Extra time for loading process
-                    window.setTimeout(this.unload, this.details.duration + 5000);
+                    this.waitForNext();
                 }
+            },
+            waitForNext() {
+                if (this.nextTimeout) {
+                    window.clearTimeout(this.nextTimeout);
+                }
+
+                // For youtue embed, cycle after video duration (+5 seconds)
+                this.nextTimeout = window.setTimeout(this.unload, this.details.duration + 5000);
             },
             unload() {
                 $("#vid-"+this.index).attr("src", "");

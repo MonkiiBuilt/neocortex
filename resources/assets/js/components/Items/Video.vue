@@ -70,26 +70,32 @@
 
                 // Wait until we know the duration to start the timer for
                 // proceeding to the next item
-                this.becameActive();
+                this.startIfActive();
             });
         },
 
         updated() {
-            this.becameActive();
+            this.startIfActive();
         },
 
         methods: {
-            becameActive() {
+            startIfActive() {
+                if (!this.active) {
+                    return;
+                }
+
                 // Start playing the video when we're ready
                 this.video.play();
 
                 this.waitForNext();
             },
             waitForNext() {
-                // For a basic image, cycle after 10 seconds
-                if (this.active) {
-                    window.setTimeout(this.next, this.duration * 1000)
+                if (this.nextTimeout) {
+                    window.clearTimeout(this.nextTimeout);
                 }
+
+                // Wait for the duration of the video before proceeding
+                this.nextTimeout = window.setTimeout(this.next, this.duration * 1000)
             }
         }
     }

@@ -27,68 +27,77 @@
 
         methods: {
             fetchItems() {
+                console.log('--> ItemCollection queue', this.items);
                 console.log('--> ItemCollection fetching items');
-                this.$http.get('queue').then((response) =>
-                {
-                    console.log(this.items);
-                    // API delivers "queue" items
-                    // We extract all the "item" objects
-                    for (let fetchedEntry in response.data.data) {
-                        let fetchedItem = response.data.data[fetchedEntry].attributes.item;
+                this.$http.get('queue').then((response) => {
+                    console.log('response', response);
+                    // Update the queue with the fetched items
+                    this.updateQueue(response.data.data);
+                }, (response) => {
+                    // Something went wrong
+                    console.log('error fetching items');
+                    console.log(response);
+                });
+            },
 
-                        // Mark each Item as "seen" because it was seen in the
-                        // API response. Afterwards we will remove all Items
-                        // that were not "seen" as we know they've been removed
-                        fetchedItem.seen = true;
+            updateQueue(fetchedItems) {
+                console.log('updateQueue', this.items);
+                // API delivers "queue" items
+                // We extract all the "item" objects
+                for (let fetchedEntry in fetchedItems) {
+                    let fetchedItem = fetchedItems[fetchedEntry].attributes.item;
 
-                        // Check if the fetched item is already in the active
-                        // display queue
-                        let itemFound = false;
-                        for (let queueEntry in this.items) {
-                            let queueItem = this.items[queueEntry];
-                            // This queue item is already in the queue
-                            if (queueItem.id === fetchedItem.id) {
-                                // If the fetched item is more up to date, we
-                                // should replace the item in the queue
-                                if (queueItem.updated_at < fetchedItem.updated_at) {
-                                  queueItem = fetchedItem;
-                                }
+                    // Mark each Item as "seen" because it was seen in the
+                    // API response. Afterwards we will remove all Items
+                    // that were not "seen" as we know they've been removed
+                    fetchedItem.seen = true;
 
-                                // Mark the item as seen
-                                queueItem.seen = true;
-                                itemFound = true;
-                                break;
+                    // Check if the fetched item is already in the active
+                    // display queue
+                    let itemFound = false;
+                    for (let queueEntry in this.items) {
+                        let queueItem = this.items[queueEntry];
+                        // This queue item is already in the queue
+                        if (queueItem.id === fetchedItem.id) {
+                            // If the fetched item is more up to date, we
+                            // should replace the item in the queue
+                            if (queueItem.updated_at < fetchedItem.updated_at) {
+                                queueItem = fetchedItem;
                             }
-                        }
 
-                        // If the item was found in the current list, no need
-                        // to add it
-                        if (itemFound) {
-                            continue;
+                            // Mark the item as seen
+                            queueItem.seen = true;
+                            itemFound = true;
+                            break;
                         }
-
-                        // Add the item fetched from the server to the display
-                        // queue
-                        this.items.push(fetchedItem);
                     }
 
-                    // Examine each item in the queue, removing items that were
-                    // not seen in the last update from the server, and reset
-                    // seen flag and component while we're iterating through
-                    let j = 0, squeezing = false;
-                    this.items.forEach((item, index) => {
-                        if (item.seen) {
-                            if (squeezing) this.items[j] = item;
-                            j++;
-                        } else squeezing = true;
+                    // If the item was found in the current list, no need
+                    // to add it
+                    if (itemFound) {
+                        continue;
+                    }
+
+                    // Add the item fetched from the server to the display
+                    // queue
+                    this.items.push(fetchedItem);
+                }
+
+                // Examine each item in the queue, removing items that were
+                // not seen in the last update from the server, and reset
+                // seen flag and component while we're iterating through
+                for (let j = 0; j < this.items.length; j++) {
+                    let item = this.items[j];
+                    if (item.seen) {
                         item.component = 'item-' + item.type;
                         delete(item.seen);
-                    });
-                    this.items.length = j;
-
-                }, (response) => {
-                    console.log('error fetching items');
-                });
+                    } else {
+                        // Remove the item that wasnt in the fetch from the
+                        // server, and set j back by one so we don't skip an
+                        // item
+                        this.items.splice(j--, 1);
+                    }
+                }
             },
 
             // Used by child Items to trigger an advance to the next Item
