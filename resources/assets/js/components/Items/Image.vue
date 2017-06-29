@@ -46,16 +46,17 @@
         methods: {
             startIfActive() {
                 if (!this.active) {
+                    // If this item isn't active, make sure no timeouts
+                    // are hanging around
+                    if (this.nextTimeout) {
+                        window.clearTimeout(this.nextTimeout);
+                    }
                     return;
                 }
 
                 this.waitForNext();
             },
             waitForNext() {
-                if (this.nextTimeout) {
-                    window.clearTimeout(this.nextTimeout);
-                }
-
                 // For a basic image, cycle after 10 seconds
                 this.nextTimeout = window.setTimeout(this.next, 10000)
             }

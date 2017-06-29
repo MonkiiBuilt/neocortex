@@ -127,6 +127,11 @@
             startIfActive() {
                 console.log('isActive?', this.active, this.details);
                 if (!this.active) {
+                    // If this item isn't active, make sure no timeouts
+                    // are hanging around
+                    if (this.nextTimeout) {
+                        window.clearTimeout(this.nextTimeout);
+                    }
                     return;
                 }
 
@@ -141,10 +146,6 @@
                 return "";
             },
             waitForNext() {
-                if (this.nextTimeout) {
-                    window.clearTimeout(this.nextTimeout);
-                }
-
                 // For weather, cycle after 8 seconds
                 this.nextTimeout = window.setTimeout(this.next, 8000)
             }
