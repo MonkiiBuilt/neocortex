@@ -27,21 +27,25 @@
 
         methods: {
             fetchItems() {
-                console.log('--> ItemCollection queue', this.items);
-                console.log('--> ItemCollection fetching items');
+                console.log('fetchItems() called');
+                //console.log('--> ItemCollection queue', this.items);
+                //console.log('--> ItemCollection fetching items');
+
                 this.$http.get('queue').then((response) => {
-                    console.log('response', response);
+                    //console.log('response', response);
                     // Update the queue with the fetched items
                     this.updateQueue(response.data.data);
                 }, (response) => {
                     // Something went wrong
-                    console.log('error fetching items');
-                    console.log(response);
+                    //console.log('error fetching items');
+                    //console.log(response);
                 });
             },
 
             updateQueue(fetchedItems) {
-                console.log('updateQueue', this.items);
+                console.log('updateQueue() called');
+                //console.log('updateQueue', this.items);
+
                 // API delivers "queue" items
                 // We extract all the "item" objects
                 for (let fetchedEntry in fetchedItems) {
@@ -102,8 +106,14 @@
 
             // Used by child Items to trigger an advance to the next Item
             next() {
-                let nextActiveItem = ((this.items.length - 1) === this.activeItem) ? 0 : (this.activeItem + 1);
-                console.log('nextActiveItem',nextActiveItem);
+                let nextActiveItem = ((this.items.length - 1) >= this.activeItem) ? 0 : (this.activeItem + 1);
+
+                console.log('next() called at ' + Date.now());
+                console.log('this.items:', this.items);
+                console.log('nextActiveItem:', nextActiveItem);
+                console.log('activeItem:', this.activeItem);
+
+                //console.log('nextActiveItem',nextActiveItem);
 
                 // Periodically refresh the queue from the server
                 if (nextActiveItem === 0) {
