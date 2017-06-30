@@ -4,7 +4,7 @@
         v-on:click="onUserInteraction"
         v-on:mousemove="onUserInteraction"
     >
-        <item-collection></item-collection>
+        <item-collection ref="itemCollection"></item-collection>
     </div>
 </template>
 
@@ -19,7 +19,11 @@ export default {
     };
   },
 
-  ready () {
+  mounted () {
+    // window.itemCollection = this.$vm.itemCollection;
+    console.log(this.$refs.itemCollection);
+    // debug this ya gronk
+    window.itemCollection = this.$refs.itemCollection;
   },
 
   methods: {

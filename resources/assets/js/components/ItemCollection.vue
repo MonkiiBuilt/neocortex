@@ -106,14 +106,12 @@
 
             // Used by child Items to trigger an advance to the next Item
             next() {
-                let nextActiveItem = ((this.items.length - 1) >= this.activeItem) ? 0 : (this.activeItem + 1);
+                let nextActiveItem = (this.activeItem >= (this.items.length - 1)) ? 0 : (this.activeItem + 1);
 
                 console.log('next() called at ' + Date.now());
                 console.log('this.items:', this.items);
                 console.log('nextActiveItem:', nextActiveItem);
                 console.log('activeItem:', this.activeItem);
-
-                //console.log('nextActiveItem',nextActiveItem);
 
                 // Periodically refresh the queue from the server
                 if (nextActiveItem === 0) {
