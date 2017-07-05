@@ -1,84 +1,37 @@
 <template>
     <div class="item-iframe"
         :class="{ component__active: active }">
-        <iframe :id="youtubeID" :data-src="youtubeUrl" src="" frameborder="0" allowfullscreen>
-        </iframe>
+        <iframe :src="youtubeUrl" frameborder="0" allowfullscreen></iframe>
     </div>
 </template>
 
 <script>
+    import BaseItem from './BaseItem.vue';
+
     export default {
-        props: {
-            details: {
-                type: Object,
-                required: true
-            },
-            index: Number,
-            active: {
-                  type: Boolean,
-                  default: false
-            },
-            // This can be used by an item to trigger a transition to the
-            // next Item in the ItemCollection
-            next: {
-                type: Function,
-                required: true
-            }
-        },
+        // Inherit props and basic functionality from BaseItem.vue
+        extends: BaseItem,
 
         computed: {
-            youtubeID() {
-                if (this.details) {
-                    var id = "vid-" + this.index;
-                    return id;
-                }
-
-                return '';
-            },
             youtubeUrl() {
-                if (this.details) {
-                    var src = "http://www.youtube.com/embed/" + this.details.vid_id + "?rel=0&hd=1&autoplay=1";
-                    return src;
+                // Making this contingent on this.active means the iframe
+                // src will be set to '' when this slide isn't active,
+                // stopping the video
+                if (this.details && this.active) {
+                    return "http://www.youtube.com/embed/" + this.details.vid_id + "?rel=0&hd=1&autoplay=1";
                 }
-
                 return '';
             }
-        },
-
-        mounted() {
-            this.startIfActive();
-        },
-
-        updated() {
-            this.startIfActive();
         },
 
         methods: {
-            startIfActive() {
-                if (!this.active) {
-                    return;
+            becameActive() {
+                if (this.itemNextTimeout) {
+                    window.clearTimeout(this.itemNextTimeout);
                 }
-
-                // Set the src of the iframe element to start playing
-                if (this.details) {
-                    var src = $("#vid-"+this.index).attr("data-src");
-                    $("#vid-"+this.index).attr("src", src);
-
-                    this.waitForNext();
-                }
+                // For YouTube embed, cycle after video duration (+5 seconds)
+                this.itemNextTimeout = window.setTimeout(this.done, this.details.duration + 5000);
             },
-            waitForNext() {
-                if (this.nextTimeout) {
-                    window.clearTimeout(this.nextTimeout);
-                }
-
-                // For youtue embed, cycle after video duration (+5 seconds)
-                this.nextTimeout = window.setTimeout(this.unload, this.details.duration + 5000);
-            },
-            unload() {
-                $("#vid-"+this.index).attr("src", "");
-                this.next();
-            }
         }
     }
 </script>

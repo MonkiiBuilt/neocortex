@@ -75,27 +75,12 @@
     }
 </style>
 
-
-
 <script>
+    import BaseItem from './BaseItem.vue';
+
     export default {
-        props: {
-            details: {
-                type: Object,
-                required: true
-            },
-            index: Number,
-            active: {
-                  type: Boolean,
-                  default: false
-            },
-            // This can be used by an item to trigger a transition to the
-            // next Item in the ItemCollection
-            next: {
-                type: Function,
-                required: true
-            }
-        },
+        // Inherit props and basic functionality from BaseItem.vue
+        extends: BaseItem,
 
         computed: {
             airTemp() {
@@ -115,28 +100,7 @@
             },
         },
 
-        mounted() {
-            this.startIfActive();
-        },
-
-        updated() {
-            this.startIfActive();
-        },
-
         methods: {
-            startIfActive() {
-                console.log('isActive?', this.active, this.details);
-                if (!this.active) {
-                    // If this item isn't active, make sure no timeouts
-                    // are hanging around
-                    if (this.nextTimeout) {
-                        window.clearTimeout(this.nextTimeout);
-                    }
-                    return;
-                }
-
-                this.waitForNext();
-            },
             weatherIconSrc(icon) {
                 return "/images/weather/" + icon + ".png";
             },
@@ -145,10 +109,6 @@
                     return min + "° - " + max + "°";
                 return "";
             },
-            waitForNext() {
-                // For weather, cycle after 8 seconds
-                this.nextTimeout = window.setTimeout(this.next, 8000)
-            }
         }
     }
 </script>

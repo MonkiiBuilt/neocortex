@@ -1,13 +1,14 @@
 <template>
     <div class="items">
-        <item
+        <full-screen-queue-item
             v-for="(item, index) in items"
             :item="item"
             :index="index"
             :active="index == activeItem"
-            :next="next"
-            :key="item.id">
-        </item>
+            :key="item.id"
+            v-on:done="handleItemDone"
+        >
+        </full-screen-queue-item>
     </div>
 </template>
 
@@ -15,7 +16,8 @@
     export default {
         data() {
             return {
-                activeItem: 0,
+                // Start with no active item
+                activeItem: null,
                 items: [],
             }
         },
@@ -26,26 +28,22 @@
         },
 
         methods: {
-            fetchItems() {
-                console.log('fetchItems() called');
-                //console.log('--> ItemCollection queue', this.items);
-                //console.log('--> ItemCollection fetching items');
-
+            fetchItems () {
+                console.log('--> ItemDisplayQueue queue', this.items);
+                console.log('--> ItemDisplayQueue fetching items');
                 this.$http.get('queue').then((response) => {
-                    //console.log('response', response);
+                    console.log('response', response);
                     // Update the queue with the fetched items
                     this.updateQueue(response.data.data);
                 }, (response) => {
                     // Something went wrong
-                    //console.log('error fetching items');
-                    //console.log(response);
+                    console.log('error fetching items');
+                    console.log(response);
                 });
             },
 
-            updateQueue(fetchedItems) {
-                console.log('updateQueue() called');
-                //console.log('updateQueue', this.items);
-
+            updateQueue (fetchedItems) {
+                console.log('updateQueue', this.items, fetchedItems);
                 // API delivers "queue" items
                 // We extract all the "item" objects
                 for (let fetchedEntry in fetchedItems) {
@@ -66,11 +64,12 @@
                             // If the fetched item is more up to date, we
                             // should replace the item in the queue
                             if (queueItem.updated_at < fetchedItem.updated_at) {
-                                queueItem = fetchedItem;
+                                this.items[queueEntry] = fetchedItem;
+                            } else {
+                                // Mark the item as seen
+                                queueItem.seen = true;
                             }
 
-                            // Mark the item as seen
-                            queueItem.seen = true;
                             itemFound = true;
                             break;
                         }
@@ -102,16 +101,28 @@
                         this.items.splice(j--, 1);
                     }
                 }
+
+                // If this is the first fetch, we should set the first item
+                // to active
+                if (this.activeItem === null) {
+                    console.log('Starting activeItem at 0');
+                    this.$nextTick(function() {
+                        this.activeItem = 0;
+                    });
+                }
+            },
+
+            handleItemDone (itemId, itemDetails) {
+                console.log('handleItemDone', itemId, this.items[this.activeItem].id);
+                if (itemId === this.items[this.activeItem].id) {
+                    this.next();
+                }
             },
 
             // Used by child Items to trigger an advance to the next Item
-            next() {
-                let nextActiveItem = (this.activeItem >= (this.items.length - 1)) ? 0 : (this.activeItem + 1);
-
-                console.log('next() called at ' + Date.now());
-                console.log('this.items:', this.items);
-                console.log('nextActiveItem:', nextActiveItem);
-                console.log('activeItem:', this.activeItem);
+            next () {
+                let nextActiveItem = (this.activeItem >= this.items.length - 1) ? 0 : (this.activeItem + 1);
+                console.log('nextActiveItem', nextActiveItem);
 
                 // Periodically refresh the queue from the server
                 if (nextActiveItem === 0) {
@@ -127,7 +138,7 @@
                 } else {
                     // There is only one item in the list, we do this to force
                     // an update so that the 'next' method keeps getting called
-                    this.activeItem = -1;
+                    this.activeItem = null;
                     this.$nextTick(function() {
                         this.activeItem = 0;
                     });
