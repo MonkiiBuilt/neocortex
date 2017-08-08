@@ -267,6 +267,7 @@ class ItemController extends Controller
                     ->orWhere('queue.status', '<>', 'active')
                     ->orWhere('queue.status', '<>', 'active');
             })
+            ->where('type', '<>', 'weather')
             ->orderBy($sortBy, $sortOrder);
 
         $filters = '';
