@@ -52,7 +52,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="/item/resurrect/{{$item->id}}" class="btn btn-success">Resurrect</a>
+                                    <a href="/item/resurrect/{{$item->item_id}}" class="btn btn-success">Resurrect</a>
                                 </td>
                             </tr>
 
