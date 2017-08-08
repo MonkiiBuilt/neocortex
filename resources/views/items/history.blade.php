@@ -1,7 +1,7 @@
 
 @extends('layouts.app')
 
-@section('title', 'Neocortex - Item Queue')
+@section('title', 'Neocortex - History')
 
 @section('headerJS')
     <script
@@ -14,52 +14,53 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
+
             <div class="panel panel-default with-nav-tabs">
+
                 <div class="panel-heading">
                     <ul class="nav nav-tabs">
-                        <li role="presentation" class="active"><a href="#">Item queue</a></li>
-                        <li role="presentation"><a href="/item/history">History</a></li>
+                        <li role="presentation"><a href="/queue">Item queue</a></li>
+                        <li role="presentation" class="active"><a href="#">History</a></li>
                     </ul>
-
                 </div>
                 <div class="panel-body">
 
                     @include('flash::message')
 
+                    {!! $filters !!}
+
+                    {{ $pagination }}
+
                     <table class="queue-table">
 
                         <tr>
-                            <td>Type</td>
-                            <td>Preview</td>
-                            <td>Actions</td>
+                        @foreach($tableHeader as $header)
+                                <td>{!! $header['header'] !!}</td>
+                        @endforeach
                         </tr>
 
-                        @foreach($entries as $entry)
+                        @foreach($items as $item)
 
-                            @php
-                            $item =& $entry->item;
-                            @endphp
-
-                            <tr data-id="{{ $entry->id }}" data-item-id="{{ $item->id }}">
-
-                                <td>
-                                    {{ $item->type }}
-                                </td>
-
+                            <tr>
+                                <td>{{ $item->type }}</td>
+                                <td>{{ $item->created_at }}</td>
+                                <td><a href="/item/history?user={{ $item->user_id }}">{{ $item->name }}</a></td>
+                                <td>{{ $item->resurrect_count }}</td>
                                 <td>
                                     @if (View::exists("items.partials.{$item->type}"))
                                         @include("items.partials.{$item->type}", ['item' => $item])
                                     @endif
                                 </td>
-
                                 <td>
-                                    {!! Form::open(['route' => ['queue.destroy', $entry->id], 'method' => 'DELETE']) !!}
-                                        <input type="submit" value="Remove">
-                                    {!! Form::close() !!}
+                                    <a href="/item/resurrect/{{$item->id}}" class="btn btn-success">Resurrect</a>
                                 </td>
                             </tr>
+
+
                         @endforeach
                     </table>
+
+                    {{ $pagination }}
 
                 </div>
             </div>
@@ -79,8 +80,8 @@
                     <div class="the-image"></div>
                 </div>
                 {{--<div class="modal-footer">--}}
-                    {{--<button type="button" class="btn btn-success rand-image-yeah">Hell yeah girfriend</button>--}}
-                    {{--<button type="button" class="btn btn-danger rand-image-no"><i class='spinner glyphicon glyphicon-refresh spinning'></i> Get this rubbish outa my face</button>--}}
+                {{--<button type="button" class="btn btn-success rand-image-yeah">Hell yeah girfriend</button>--}}
+                {{--<button type="button" class="btn btn-danger rand-image-no"><i class='spinner glyphicon glyphicon-refresh spinning'></i> Get this rubbish outa my face</button>--}}
                 {{--</div>--}}
             </div>
 

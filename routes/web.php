@@ -16,6 +16,10 @@ Route::get('/', 'HomeController@index')->name('home');
 // Routes for user registration, login, logout, and password reset
 Auth::routes();
 
+// History
+Route::get('/item/history', ['uses' => 'ItemController@history', 'as' => 'history']);
+Route::get('/item/resurrect/{id}', ['uses' => 'ItemController@resurrect', 'as' => 'resurrect']);
+
 // Resource routes (index, create, store, etc) for items
 Route::resource('item', 'ItemController');
 
