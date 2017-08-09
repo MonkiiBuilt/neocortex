@@ -7839,7 +7839,7 @@ button.loading .spinner {
   right: 0;
   min-width: 100%;
   min-height: 100%;
-  font-size: 100px;
+  font-size: 10rem;
   text-align: right;
   filter: alpha(opacity=0);
   opacity: 0;
@@ -7847,6 +7847,12 @@ button.loading .spinner {
   background: white;
   cursor: inherit;
   display: block;
+}
+
+.form-horizontal .control-label span {
+  display: block;
+  font-size: 1rem;
+  color: #969ea2;
 }
 
 /*# sourceMappingURL=app.css.map */

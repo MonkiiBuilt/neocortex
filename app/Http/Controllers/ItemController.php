@@ -45,7 +45,10 @@ class ItemController extends Controller
         // Grab the options for the Upload Image processing
         $po = \App\Models\Items\Image::$processingOptions;
 
-        return view('items.create', ['processingOptions' => $po]);
+        // Get the server settings for maximum upload size
+        $max = ini_get('upload_max_filesize');
+
+        return view('items.create', ['processingOptions' => $po, 'maxUploadSize' => $max]);
     }
 
     /**
@@ -57,10 +60,21 @@ class ItemController extends Controller
     public function store(CreateFormRequest $request)
     {
         // Are we uploading?
-        if (isset($_POST['btnUpload'])) {
+        if ($request->input('btnUpload') !== null) {
             $url = $this->handleUpload();
 
             // Check if processing required
+            if (!empty($request->input('processing'))) {
+                try {
+                    $filter = 'App\Libs\ImageProcessing\\' . $request->input('processing');
+                    $url = $filter::apply($url);
+                } catch (\Exception $e) {
+                    return redirect()
+                        ->route('item.create')
+                        ->withInput()
+                        ->withErrors(['upload' => $e->getMessage()]);
+                }
+            }
         }
         else {
             $url = $request->input('url');
@@ -101,14 +115,6 @@ class ItemController extends Controller
      */
     public function handleUpload()
     {
-        // Check if file upladoed
-        if (empty($_FILES)) {
-            return redirect()
-                ->route('item.create')
-                ->withInput()
-                ->withErrors(['upload' => CreateFormRequest::$messages['upload.toobig']]);
-        }
-
         $urlPath    = "/uploads/";
         $targetPath = public_path() . $urlPath;
         if (!is_dir($targetPath)) mkdir($targetPath, 0755, true);

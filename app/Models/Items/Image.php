@@ -22,16 +22,13 @@ class Image extends Item
      */
     public static $processingOptions =
         [[
-            'filter' => "",
+            'name' => "",
             'title'  => "No Processing",
             'desc'   => "Image will be displayed as is."
           ],[
-//            'filter' => "Banderas",
-//            'title'  => "Antonio Banderas-ize Image",
-//            'desc'   => "Inserts JPG/JPEG as screenshot in Antonio Banderas reaction gif. Image needs to be 16:9 (800x450)"
-            'filter' => "Nothing",
-            'title'  => "Coming Soon!",
-            'desc'   => "Image Processing options coming soon."
+            'name' => "Banderas",
+            'title'  => "Antonio Banderas-ize Image",
+            'desc'   => "Inserts JPG/JPEG as screenshot in Antonio Banderas reaction gif. Image should be 16:10ish (950x600)"
         ]];
 
     /**

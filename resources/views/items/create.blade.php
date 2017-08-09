@@ -73,7 +73,7 @@
                     {!! Form::open(['route' => 'item.store', 'class' => 'form-horizontal', 'enctype' => 'multipart/form-data']) !!}
 
                     <div class="form-group{{ $errors->has('upload') ? ' has-error' : '' }}">
-                        <label class="col-md-4 control-label">Image File</label>
+                        <label class="col-md-4 control-label">Image File <span>(MAX SIZE {{ $maxUploadSize }}B)</span></label>
 
                         <div class="col-md-6">
                             <label class="btn  btn-default  btn-file">
@@ -96,7 +96,7 @@
                         <div class="col-md-6">
                             <select name="processing">
                                 @foreach($processingOptions as $option)
-                                    <option value="{{ $option['filter'] }}" data-desc="{{ $option['desc'] }}">
+                                    <option value="{{ $option['name'] }}" data-desc="{{ $option['desc'] }}">
                                         {{ $option['title'] }}
                                     </option>
                                 @endforeach

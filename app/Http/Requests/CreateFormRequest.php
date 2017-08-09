@@ -12,8 +12,7 @@ class CreateFormRequest extends FormRequest
         'url.invalid' => "I can't get anything useful from that url. I haven't got time for this shit. Try something less stupid.",
         'upload.required' => "Did you just try to upload without including a file?! If you do that again, I'm revoking your access for 24 hours.",
         'upload.error' => "Some developer obviously set me up before they had their coffee. Ask the lazy bastard to try again 'cause you can't upload a file.",
-        'upload.notimage' => "Look up there. It says \"Upload an <b>IMAGE<b>\". Only '.jpg', '.jpeg', '.png' or '.gif' files, you nuff nuff.",
-        'upload.toobig' => "File too big"
+        'upload.notimage' => "Look up there. It says \"Upload an <b>IMAGE<b>\". Only '.jpg', '.jpeg', '.png' or '.gif' files, you nuff nuff."
     ];
 
     /**
@@ -35,6 +34,8 @@ class CreateFormRequest extends FormRequest
      */
     public function rules()
     {
+        $rules = [];
+
         if (isset($_POST['btnUrl'])) {
             $rules = [
                 'url' => 'required|url'
