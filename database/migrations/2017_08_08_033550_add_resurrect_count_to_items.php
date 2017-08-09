@@ -14,7 +14,7 @@ class AddResurrectCountToItems extends Migration
     public function up()
     {
         Schema::table('items', function($table) {
-            $table->integer('resurrect_count');
+            $table->integer('resurrect_count')->default(0);
         });
     }
 
