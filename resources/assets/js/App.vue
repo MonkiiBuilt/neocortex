@@ -4,7 +4,7 @@
         v-on:click="onUserInteraction"
         v-on:mousemove="onUserInteraction"
     >
-        <item-collection></item-collection>
+        <item-display-queue></item-display-queue>
     </div>
 </template>
 

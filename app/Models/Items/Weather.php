@@ -10,7 +10,7 @@ use Carbon\Carbon;
 
 class Weather extends Item
 {
-    const WEATHER_UPDATE_MINUTES = 1;
+    const WEATHER_UPDATE_MINUTES = 30;
 
     /**
      * The value of the item.type field which indicates this item class.

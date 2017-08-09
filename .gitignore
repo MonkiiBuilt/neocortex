@@ -11,3 +11,5 @@ Homestead.yaml
 .vagrant
 public/unsplash_images
 public/uploads
+*.sql
+*.sql.gz

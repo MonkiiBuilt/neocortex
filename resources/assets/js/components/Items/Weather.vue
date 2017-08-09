@@ -75,27 +75,12 @@
     }
 </style>
 
-
-
 <script>
+    import BaseItem from './BaseItem.vue';
+
     export default {
-        props: {
-            details: {
-                type: Object,
-                required: true
-            },
-            index: Number,
-            active: {
-                  type: Boolean,
-                  default: false
-            },
-            // This can be used by an item to trigger a transition to the
-            // next Item in the ItemCollection
-            next: {
-                type: Function,
-                required: true
-            }
-        },
+        // Inherit props and basic functionality from BaseItem.vue
+        extends: BaseItem,
 
         computed: {
             airTemp() {
@@ -105,8 +90,6 @@
                 return this.details.readings.apparent_temp.value;
             },
             tempSymbol() {
-                console.log(this.details);
-                console.log(this.details.readings.apparent_temp.units);
                 switch(this.details.readings.apparent_temp.units) {
                     case "Celsius":
                         return "℃";
@@ -115,14 +98,6 @@
                 }
                 return "°";
             },
-        },
-
-        mounted() {
-            this.waitForNext();
-        },
-
-        updated() {
-            this.waitForNext();
         },
 
         methods: {
@@ -134,12 +109,6 @@
                     return min + "° - " + max + "°";
                 return "";
             },
-            waitForNext() {
-                // For a basic image, cycle after 8 seconds
-                if (this.active) {
-                    window.setTimeout(this.next, 8000)
-                }
-            }
         }
     }
 </script>

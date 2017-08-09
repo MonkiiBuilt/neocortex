@@ -6,24 +6,11 @@
 </template>
 
 <script>
+    import BaseItem from './BaseItem.vue';
+
     export default {
-        props: {
-            details: {
-                type: Object,
-                required: true
-            },
-            index: Number,
-            active: {
-                  type: Boolean,
-                  default: false
-            },
-            // This can be used by an item to trigger a transition to the
-            // next Item in the ItemCollection
-            next: {
-                type: Function,
-                required: true
-            }
-        },
+        // Inherit props and basic functionality from BaseItem.vue
+        extends: BaseItem,
 
         computed: {
             imageUrl() {
@@ -34,23 +21,6 @@
                 return '';
             },
         },
-
-        mounted() {
-            this.waitForNext();
-        },
-
-        updated() {
-            this.waitForNext();
-        },
-
-        methods: {
-            waitForNext() {
-                // For a basic image, cycle after 10 seconds
-                if (this.active) {
-                    window.setTimeout(this.next, 10000)
-                }
-            }
-        }
     }
 </script>
 

@@ -17,8 +17,8 @@ var App = require('./App.vue');
 Vue.http.options.root = 'api';
 
 Vue.component('app', App);
-Vue.component('item-collection', require('./components/ItemCollection.vue'));
-Vue.component('item', require('./components/Item.vue'));
+Vue.component('item-display-queue', require('./components/ItemDisplayQueue.vue'));
+Vue.component('full-screen-queue-item', require('./components/FullScreenQueueItem.vue'));
 Vue.component('item-image', require('./components/Items/Image.vue'));
 Vue.component('item-video', require('./components/Items/Video.vue'));
 Vue.component('item-youtube', require('./components/Items/YouTube.vue'));
