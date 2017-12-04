@@ -53,7 +53,7 @@
                                 </td>
 
                                 <td>
-                                    @if ($remaining_image_count > 1)
+                                    @if ($item->type != 'image' || $remaining_image_count > 1)
                                     {!! Form::open(['route' => ['queue.destroy', $entry->id], 'method' => 'DELETE']) !!}
                                         <input type="submit" value="Remove">
                                     {!! Form::close() !!}
