@@ -26,7 +26,14 @@ class QueueController extends Controller
     {
         $entries = Queue::allActive($columns = ['*'], $include_permanent = FALSE);
 
-        return view('queue.index', ['entries' => $entries]);
+        $remaining_image_count = 0;
+        foreach($entries as $entry) {
+            if($entry->item->type == 'image') {
+                $remaining_image_count++;
+            }
+        }
+
+        return view('queue.index', ['entries' => $entries, 'remaining_image_count' => $remaining_image_count]);
     }
 
     public function destroy($id) {

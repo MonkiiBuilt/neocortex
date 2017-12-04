@@ -53,9 +53,11 @@
                                 </td>
 
                                 <td>
+                                    @if ($remaining_image_count > 1)
                                     {!! Form::open(['route' => ['queue.destroy', $entry->id], 'method' => 'DELETE']) !!}
                                         <input type="submit" value="Remove">
                                     {!! Form::close() !!}
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
