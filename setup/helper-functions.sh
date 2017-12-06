@@ -30,9 +30,9 @@ cl() {
 php-setting-update() {
 	KEY=$1
 	VAL=$2
-	if grep -q "$KEY" /etc/php/7.0/apache2/php.ini; then
-        sed -i "s/$KEY = .*/$KEY = $VAL/" /etc/php/7.0/apache2/php.ini
+	if grep -q "$KEY" /etc/php/7.1/apache2/php.ini; then
+        sed -i "s/$KEY = .*/$KEY = $VAL/" /etc/php/7.1/apache2/php.ini
     else
-        sudo bash -c "echo $KEY' = '$VAL >> /etc/php/7.0/apache2/php.ini"
+        sudo bash -c "echo $KEY' = '$VAL >> /etc/php/7.1/apache2/php.ini"
     fi
 }

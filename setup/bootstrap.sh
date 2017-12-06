@@ -34,17 +34,19 @@ if [ -z "$LAST_UPDATED" ] || [ "$LAST_UPDATED" -lt "$DAY_AGO" ]; then
 
     log "updating packages"
 
-    add-apt-repository ppa:ondrej/php
-    apt-get update
+    apt-get update -y
+    apt-get install -q -f -y software-properties-common
+    add-apt-repository -y ppa:ondrej/php
+    apt-get update -y
 
     apt-get install -q -f -y \
       -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' \
       build-essential git language-pack-en-base unzip \
       apache2 \
-      php7.0 php7.0-mcrypt php7.0-curl php-xdebug php7.0-mbstring php7.0-xml \
-      php7.0-zip \
-      libapache2-mod-php7.0 \
-      mysql-server-5.7 php7.0-mysql php-mysql \
+      php7.1 php7.1-mcrypt php7.1-curl php-xdebug php7.1-mbstring php7.1-xml \
+      php7.1-zip \
+      libapache2-mod-php7.1 \
+      mysql-server-5.7 php7.1-mysql php-mysql \
       imagemagick php-imagick \
       memcached php-memcached \
       postfix mailutils
@@ -68,7 +70,7 @@ dpkg-reconfigure --frontend noninteractive tzdata
 # Setup apache
 log "set up apache"
 echo "ServerName localhost" >> /etc/apache2/apache2.conf
-a2enmod php7.0
+a2enmod php7.1
 a2enmod rewrite
 a2enmod ssl
 a2enmod headers
